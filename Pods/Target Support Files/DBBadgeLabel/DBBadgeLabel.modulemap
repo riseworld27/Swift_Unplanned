@@ -1,0 +1,6 @@
+framework module DBBadgeLabel {
+  umbrella header "DBBadgeLabel-umbrella.h"
+
+  export *
+  module * { export * }
+}

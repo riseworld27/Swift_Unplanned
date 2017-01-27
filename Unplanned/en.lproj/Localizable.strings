@@ -1,0 +1,70 @@
+/*
+  Localizable.strings
+  Unplanned
+
+  Created by matata on 04.06.16.
+  Copyright © 2016 matata. All rights reserved.
+*/
+
+"Register"	= "Register";
+"Upload photo" = "Upload photo";
+"Name" = "Name";
+"Last name"	= "Last name";
+"Birthday"	= "Birthday";
+"Continue" =	"Continue";
+"By registering you are accepting the" =	"By registering you are accepting the";
+"Terms and conditions" = "Terms and conditions";
+" and " = " and ";
+"Privacy Policy" =	"Privacy Policy";
+
+"Feed" = "Feed";
+"My Groups" =	"My Groups";
+"Settings" =	"Settings";
+"Share" =	"Share";
+"Breakfast" =	"Breakfast";
+"Lunch" =	"Lunch";
+"Dinner" =	"Dinner";
+"Drinks" =	"Drinks";
+"Party" =	"Party";
+"Nightclub" =	"Nightclub";
+"Movies" =	"Movies";
+"Create Event" =	"Create event";
+"Done" =	"Done";
+"Where" =	"Where";
+"When" =	"When";
+"Who" =	"Who";
+"Choose a place" =	"Choose a place";
+"Choose a date and time" =	"Choose a date and time";
+"Date and time" =	"Date and time";
+"Invite friends" =	"Invite friends";
+"Create group" =	"Create group";
+"Invite all" =	"Invite all";
+"Groups" =	"Groups";
+"Create" = "Create";
+"members" =	"members";
+"Add member" =	"Add member";
+"Search Place" = "Search Place";
+
+"Invitations" =	"Invitations";
+"Sent" =	"Sent";
+
+"Attending"	= "Attending";
+"Yes" = "Yes";
+"No" =	"No";
+"Confirmed" =	"Confirmed";
+"Name of group" =	"Name of group";
+"Group icon"=	"Group icon";
+"Family" =	"Family";
+"Work" =	"Work";
+"School" =	"School";
+"Friends" =	"Friends";
+"Other"	= "Other";
+"Find friends" =	"Find friends";
+"All contacts"	= "All contacts";
+"Change phone"	= "Change phone";
+"Invite friends" =	"Invite friends";
+"Legal" =	"Legal";
+"Log out" =	"Log out";
+"Share"	= "Share";
+"Edit Profile" = "Edit Profile";
+"Save" = "Save";

@@ -1,0 +1,6 @@
+framework module UIAlertControllerExtension {
+  umbrella header "UIAlertControllerExtension-umbrella.h"
+
+  export *
+  module * { export * }
+}

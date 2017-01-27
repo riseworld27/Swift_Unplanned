@@ -1,0 +1,101 @@
+PODS:
+  - ActionSheetPicker-3.0 (2.1.0)
+  - Alamofire (3.4.1)
+  - APAddressBook/Core (0.2.3)
+  - APAddressBook/Swift (0.2.3):
+    - APAddressBook/Core
+  - Bolts/Tasks (1.7.0)
+  - Crashlytics (3.7.1):
+    - Fabric (~> 1.6.3)
+  - DBBadgeLabel (1.0.0)
+  - Digits (2.2.0):
+    - TwitterCore (= 2.2.0)
+  - Fabric (1.6.7)
+  - GCDSwift (0.2.0)
+  - JSQNotificationObserverKit (5.0.0)
+  - Kingfisher (2.4.1)
+  - Localize-Swift (1.1.2)
+  - MBProgressHUD (0.9.2)
+  - MTDates (1.0.3)
+  - PageMenu (1.2.9)
+  - Parse (1.13.0):
+    - Bolts/Tasks (~> 1.6)
+  - QuadratTouch (1.1.1)
+  - Realm (1.0.1):
+    - Realm/Headers (= 1.0.1)
+  - Realm/Headers (1.0.1)
+  - RealmSwift (1.0.1):
+    - Realm (= 1.0.1)
+  - SideMenu (1.1.7)
+  - SwiftDate (3.0.8)
+  - SwiftyJSON (2.3.2)
+  - TwitterCore (2.2.0):
+    - Fabric
+  - UIAlertControllerExtension (1.1)
+  - UIColor_Hex_Swift (2.1)
+  - UIView+TKGeometry (0.2)
+
+DEPENDENCIES:
+  - ActionSheetPicker-3.0 (~> 2.1)
+  - Alamofire (~> 3.4)
+  - APAddressBook/Swift
+  - Crashlytics
+  - DBBadgeLabel
+  - Digits
+  - Fabric
+  - GCDSwift
+  - JSQNotificationObserverKit
+  - Kingfisher (~> 2.4)
+  - Localize-Swift
+  - MBProgressHUD
+  - MTDates
+  - PageMenu
+  - Parse (~> 1.13)
+  - QuadratTouch (>= 1.0)
+  - RealmSwift
+  - SideMenu
+  - SwiftDate
+  - SwiftyJSON (from `https://github.com/SwiftyJSON/SwiftyJSON.git`)
+  - TwitterCore
+  - UIAlertControllerExtension (~> 1.1)
+  - UIColor_Hex_Swift (~> 2.1)
+  - UIView+TKGeometry
+
+EXTERNAL SOURCES:
+  SwiftyJSON:
+    :git: https://github.com/SwiftyJSON/SwiftyJSON.git
+
+CHECKOUT OPTIONS:
+  SwiftyJSON:
+    :commit: 73670b94292b8d8496c398a973f56ac67789ba9f
+    :git: https://github.com/SwiftyJSON/SwiftyJSON.git
+
+SPEC CHECKSUMS:
+  ActionSheetPicker-3.0: db66605feb85689279d328206c61f0e4f398df92
+  Alamofire: 01a82e2f6c0f860ade35534c8dd88be61bdef40c
+  APAddressBook: 2a91bf05999548bea210ec9d1a68073f4dc8bfce
+  Bolts: a0058fa3b331c5a1e4402d534f2dae36dbff31e4
+  Crashlytics: 3cdd4c9655be68032a0cf0379e0fb5ef6af22cad
+  DBBadgeLabel: 3dbcd2bac3e537131c997f627f250d85fc272c9d
+  Digits: 335c479574eb2bbc50be326c1daf505b68d87135
+  Fabric: caf7580c725e64db144f610ac65cd60956911dc7
+  GCDSwift: 4382f69c53deaf730adfc5d7d16901cc95e31ca5
+  JSQNotificationObserverKit: 1ef50227a393a808ed6f8edb149c389db30b2a9f
+  Kingfisher: 41aed5b6c1ed8fa98cf6d75283ce89cf7890f517
+  Localize-Swift: 584bcde9c6b13fcccb1333f398a46a0e60735e7a
+  MBProgressHUD: 1569cf7ace17a8bac47aabfbb8580a49690386d1
+  MTDates: c65affdfb7b34001c5c9e3fe0beac4b1b8334a58
+  PageMenu: ba19ff267f7a19e444e93c20a7847b78954a7011
+  Parse: f51c24d2feb412e4b2d6cc73d37cb24e8d0089bc
+  QuadratTouch: 296d83c63a4328f6f40af9fc728fe24f0e3b00d4
+  Realm: 2e15e39d35b08abb529e212ed5d8af107b5236c8
+  RealmSwift: d73ea2af08c3676dbdd5e4b669651a0f492162a4
+  SideMenu: 7b420772e1aa7a2b3a0b0e191566e7e8e0868f53
+  SwiftDate: 971f8b9394f664f2226b9c3ab64e801a7291c612
+  SwiftyJSON: 04ccea08915aa0109039157c7974cf0298da292a
+  TwitterCore: 115527630bb2986954adc928b8c895a92bcd57e5
+  UIAlertControllerExtension: d3aaf48590f182096b8bb81997ae54f24ccc07ab
+  UIColor_Hex_Swift: e91dc51f6bf252ec7bf74c8704ceedeeb7640c1c
+  UIView+TKGeometry: bef0d7727753910d66d6fa51a3128ae6908047ef
+
+COCOAPODS: 0.39.0

@@ -1,0 +1,73 @@
+/* 
+  Localizable.strings
+  Unplanned
+
+  Created by matata on 04.06.16.
+  Copyright © 2016 matata. All rights reserved.
+*/
+
+"Register"	= "Registro";
+"Upload photo" = "Sube tu foto";
+"Name" = "Nombre";
+"Last name"	= "Apellido";
+"Birthday"	="Cumpleaños";
+"Continue" =	"CONTINUAR";
+"By registering you are accepting the" =	"Al registrarte estas aceptando los";
+
+"Terms and conditions" = "Terminos de uso";
+" and " = " y las ";
+"Privacy Policy" =	"Políticas de Privacidad";
+
+"Feed" =	"Feed";
+"My Groups" =	"Mis Grupos";
+"Settings" =	"Ajustes";
+"Share" =	"Compartir";
+"Breakfast" =	"Desayuno";
+"Lunch" =	"Comida";
+"Dinner" =	"Cena";
+"Drinks" =	"Drinks";
+"Party" =	"Fiesta";
+"Nightclub" =	"Antro";
+
+"Movies" =	"Cine";
+"Create Event" = "Crear Evento";
+"Done" =	"Hecho";
+"Where" =	"Dónde";
+"When" =	"Cuando";
+"Who" =	"Quiénes";
+"Choose a place" =	"Elije un lugar";
+"Choose a date and time" =	"Elije una fecha";
+"Date and time" =	"Fecha y Hora";
+"Invite friends" =	"Invita amigos";
+"Create group" =	"Crear Grupo";
+"Invite all" =	"Invitar a Todos";
+"Groups" =	"Grupos";
+"Create" = "Crear";
+
+"members" =	"Miembros";
+"Add member" =	"Agregar Participante";
+
+"Invitations" =	"Invitaciones";
+"Sent" =	"Enviados";
+
+"  Attending"	= "Asistir";
+"Yes" = "Si";
+"No" =	"No";
+"Confirmed" =	"Confirmados";
+"Name of group" =	"Nombre de grupo";
+"Group icon" =	"Imagen de Grupo";
+"Family" =	"Familia";
+"Work" =	"Trabajo";
+"School" =	"Escuela";
+"Friends" =	"Amigos";
+"Other"	= "Otra";
+"Find friends" =	"Buscar Amigos";
+"Search Place" = "Buscar Lugar";
+"All contacts"	= "Todos los contactos";
+"Change phone"	= "Cambiar Teléfono";
+"Invite friends" =	"Invitar amigos";
+"Legal" =	"Terminos y Privacidad";
+"Log out" =	"Cerrar Sesión";
+"Share"	= "Compartir";
+"Edit Profile" = "Editar Perfil";
+"Save" = "Salvar";

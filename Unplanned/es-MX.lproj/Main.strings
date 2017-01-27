@@ -1,0 +1,147 @@
+
+/* Class = "UIButton"; normalTitle = "Logout"; ObjectID = "0Ra-Bd-YsU"; */
+"0Ra-Bd-YsU.normalTitle" = "Logout";
+
+/* Class = "UILabel"; text = "¿Quiénes?"; ObjectID = "2Qa-jg-xfz"; */
+"2Qa-jg-xfz.text" = "¿Quiénes?";
+
+/* Class = "UILabel"; text = "Feed"; ObjectID = "3LH-nd-4k6"; */
+"3LH-nd-4k6.text" = "Feed";
+
+/* Class = "UIButton"; normalTitle = "No"; ObjectID = "42V-XF-AVy"; */
+"42V-XF-AVy.normalTitle" = "No";
+
+/* Class = "UILabel"; text = "mar - 3:30 p.m."; ObjectID = "5Tr-4R-Msr"; */
+"5Tr-4R-Msr.text" = "mar - 3:30 p.m.";
+
+/* Class = "UILabel"; text = "Cine"; ObjectID = "72L-Iy-j4L"; */
+"72L-Iy-j4L.text" = "Cine";
+
+/* Class = "UITextField"; placeholder = "Apellido"; ObjectID = "BXG-OX-2RI"; */
+"BXG-OX-2RI.placeholder" = "Apellido";
+
+/* Class = "UIBarButtonItem"; title = "Menu"; ObjectID = "Bkn-Bc-IYh"; */
+"Bkn-Bc-IYh.title" = "Menu";
+
+/* Class = "UIButton"; normalTitle = "CONTINUAR"; ObjectID = "Efj-sf-vUv"; */
+"Efj-sf-vUv.normalTitle" = "CONTINUAR";
+
+/* Class = "UILabel"; text = "Label"; ObjectID = "Eun-jC-Llh"; */
+"Eun-jC-Llh.text" = "Label";
+
+/* Class = "UITextField"; placeholder = "Buscar Lugar"; ObjectID = "Exv-uy-RJC"; */
+"Exv-uy-RJC.placeholder" = "Buscar Lugar";
+
+/* Class = "UILabel"; text = "Grupos"; ObjectID = "F16-l7-HbZ"; */
+"F16-l7-HbZ.text" = "Grupos";
+
+/* Class = "UIButton"; normalTitle = "Hecho"; ObjectID = "Fpq-3q-oUW"; */
+"Fpq-3q-oUW.normalTitle" = "Hecho";
+
+/* Class = "UILabel"; text = "Label"; ObjectID = "H81-Je-90t"; */
+"H81-Je-90t.text" = "Label";
+
+/* Class = "UILabel"; text = "Title"; ObjectID = "LSM-TV-kNL"; */
+"LSM-TV-kNL.text" = "Title";
+
+/* Class = "UITextField"; placeholder = "Buscar Lugar"; ObjectID = "MjX-xb-8aR"; */
+"MjX-xb-8aR.placeholder" = "Buscar Lugar";
+
+/* Class = "UITextField"; placeholder = "Nombre de grupo"; ObjectID = "Og5-SZ-RNK"; */
+"Og5-SZ-RNK.placeholder" = "Nombre de grupo";
+
+/* Class = "UILabel"; text = "Label"; ObjectID = "OoB-ne-OAk"; */
+"OoB-ne-OAk.text" = "Label";
+
+/* Class = "UILabel"; text = "Label"; ObjectID = "Qgt-lg-rYz"; */
+"Qgt-lg-rYz.text" = "Label";
+
+/* Class = "UILabel"; text = "Label"; ObjectID = "RR2-Rm-7Gk"; */
+"RR2-Rm-7Gk.text" = "Label";
+
+/* Class = "UILabel"; text = "Tíos"; ObjectID = "TP7-CC-bAj"; */
+"TP7-CC-bAj.text" = "Tíos";
+
+/* Class = "UIButton"; normalTitle = "Elije una fecha"; ObjectID = "VVa-7p-mKX"; */
+"VVa-7p-mKX.normalTitle" = "Elije una fecha";
+
+/* Class = "UIButton"; normalTitle = "Elije un lugar"; ObjectID = "VsJ-4f-D8z"; */
+"VsJ-4f-D8z.normalTitle" = "Elije un lugar";
+
+/* Class = "UISegmentedControl"; Y4m-VU-ZfM.segmentTitles[0] = "Invitaciones"; ObjectID = "Y4m-VU-ZfM"; */
+"Y4m-VU-ZfM.segmentTitles[0]" = "Invitaciones";
+
+/* Class = "UISegmentedControl"; Y4m-VU-ZfM.segmentTitles[1] = "Enviados"; ObjectID = "Y4m-VU-ZfM"; */
+"Y4m-VU-ZfM.segmentTitles[1]" = "Enviados";
+
+/* Class = "UILabel"; text = "Label"; ObjectID = "ZMf-iJ-ynw"; */
+"ZMf-iJ-ynw.text" = "Label";
+
+/* Class = "UILabel"; text = "Label"; ObjectID = "a58-m5-6Sq"; */
+"a58-m5-6Sq.text" = "Label";
+
+/* Class = "UIButton"; normalTitle = "Si"; ObjectID = "aXX-TQ-Mkx"; */
+"aXX-TQ-Mkx.normalTitle" = "Si";
+
+/* Class = "UILabel"; text = "Isay Valex"; ObjectID = "ae6-nE-WCn"; */
+"ae6-nE-WCn.text" = "Isay Valex";
+
+/* Class = "UITextField"; placeholder = "Buscar Lugar"; ObjectID = "den-Yj-9ec"; */
+"den-Yj-9ec.placeholder" = "Buscar Lugar";
+
+/* Class = "UILabel"; text = "2"; ObjectID = "dhg-YY-9dF"; */
+"dhg-YY-9dF.text" = "2";
+
+/* Class = "UIButton"; normalTitle = "Friends List"; ObjectID = "ee4-C2-V90"; */
+"ee4-C2-V90.normalTitle" = "Friends List";
+
+/* Class = "UILabel"; text = "¿Cuando?"; ObjectID = "eyo-bU-raY"; */
+"eyo-bU-raY.text" = "¿Cuando?";
+
+/* Class = "UILabel"; text = "Subtitle"; ObjectID = "f7f-Aw-Zj9"; */
+"f7f-Aw-Zj9.text" = "Subtitle";
+
+/* Class = "UILabel"; text = "¿Dónde?"; ObjectID = "g4A-wl-yNs"; */
+"g4A-wl-yNs.text" = "¿Dónde?";
+
+/* Class = "UILabel"; text = "Calle Montañas Calizas 210, Lomas de Chapultepec II sección, 11010, CDM"; ObjectID = "hH7-O7-QrF"; */
+"hH7-O7-QrF.text" = "Calle Montañas Calizas 210, Lomas de Chapultepec II sección, 11010, CDM";
+
+/* Class = "UITextField"; placeholder = "Cumpleaños"; ObjectID = "isH-u4-Py9"; */
+"isH-u4-Py9.placeholder" = "Cumpleaños";
+
+/* Class = "UIButton"; normalTitle = "Invita amigos"; ObjectID = "jlV-OC-jlw"; */
+"jlV-OC-jlw.normalTitle" = "Invita amigos";
+
+/* Class = "UILabel"; text = "Label"; ObjectID = "nTf-UL-J2z"; */
+"nTf-UL-J2z.text" = "Label";
+
+/* Class = "UITextField"; placeholder = "Nombre"; ObjectID = "nav-NR-zce"; */
+"nav-NR-zce.placeholder" = "Nombre";
+
+/* Class = "UILabel"; text = "Label"; ObjectID = "sHk-jK-ShI"; */
+"sHk-jK-ShI.text" = "Label";
+
+/* Class = "UILabel"; text = "Sube tu foto"; ObjectID = "sQL-qv-o3q"; */
+"sQL-qv-o3q.text" = "Sube tu foto";
+
+/* Class = "UILabel"; text = "Label"; ObjectID = "sWU-lS-DV0"; */
+"sWU-lS-DV0.text" = "Label";
+
+/* Class = "UILabel"; text = "matata"; ObjectID = "teF-RT-d7P"; */
+"teF-RT-d7P.text" = "matata";
+
+/* Class = "UILabel"; text = "Label"; ObjectID = "vJC-1p-Y6k"; */
+"vJC-1p-Y6k.text" = "Label";
+
+/* Class = "UILabel"; text = "8 Confirmados"; ObjectID = "wg4-Vm-ODl"; */
+"wg4-Vm-ODl.text" = "8 Confirmados";
+
+/* Class = "UILabel"; text = "Label"; ObjectID = "ww3-v3-adG"; */
+"ww3-v3-adG.text" = "Label";
+
+/* Class = "UILabel"; text = "Label"; ObjectID = "xvh-lQ-ocG"; */
+"xvh-lQ-ocG.text" = "Label";
+
+/* Class = "UILabel"; text = "Label"; ObjectID = "ya5-tE-FZb"; */
+"ya5-tE-FZb.text" = "Label";
