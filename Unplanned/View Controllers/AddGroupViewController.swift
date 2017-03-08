@@ -23,7 +23,7 @@ class AddGroupViewController: BaseViewController {
         
     }
     
-    override func viewWillAppear(animated: Bool) {
+    override func viewWillAppear(_ animated: Bool) {
         self.setTransparentNavigationBar()
         self.createNavigationBarButtons()
     }
@@ -32,11 +32,11 @@ class AddGroupViewController: BaseViewController {
     func createNavigationBarButtons(){
         var menuImage:UIImage = UIImage(named: "icon_back_button")!
         
-        menuImage = menuImage.imageWithRenderingMode(UIImageRenderingMode.AlwaysOriginal)
-        let menuButton: UIButton = UIButton(frame: CGRectMake(5, 5, 20, 20))
-        menuButton.setImage(menuImage, forState: .Normal)
-        menuButton.setImage(menuImage, forState: .Highlighted)
-        menuButton.addTarget(self, action: #selector(CreateEventViewController.close(_:)), forControlEvents:.TouchUpInside)
+        menuImage = menuImage.withRenderingMode(UIImageRenderingMode.alwaysOriginal)
+        let menuButton: UIButton = UIButton(frame: CGRect(x: 5, y: 5, width: 20, height: 20))
+        menuButton.setImage(menuImage, for: UIControlState())
+        menuButton.setImage(menuImage, for: .highlighted)
+        menuButton.addTarget(self, action: #selector(CreateEventViewController.close(_:)), for:.touchUpInside)
         let menuButtonBar = UIBarButtonItem.init(customView: menuButton)
         self.navigationItem.leftBarButtonItem = menuButtonBar
         
@@ -44,54 +44,54 @@ class AddGroupViewController: BaseViewController {
         
         let frame = ivBackground.bounds
         gradientLayer.frame = frame
-        gradientLayer.colors = [UIColor(rgba: "#00BBEB"),UIColor(rgba: "#00CF97")].map{$0.CGColor}
+        gradientLayer.colors = [UIColor(rgba: "#00BBEB"),UIColor(rgba: "#00CF97")].map{$0.cgColor}
         gradientLayer.startPoint = CGPoint(x: 1.0, y: 0.0)
         gradientLayer.endPoint = CGPoint(x: 0.0, y: 1.0)
         
         // Render the gradient to UIImage
         UIGraphicsBeginImageContext(gradientLayer.bounds.size)
-        gradientLayer.renderInContext(UIGraphicsGetCurrentContext()!)
+        gradientLayer.render(in: UIGraphicsGetCurrentContext()!)
         let image = UIGraphicsGetImageFromCurrentImageContext()
         UIGraphicsEndImageContext()
         
         ivBackground.image = image
         
         self.navigationItem.title = "Create group".localized()
-        self.navigationController?.navigationBar.titleTextAttributes = [NSFontAttributeName : UIFont.systemFontOfSize(17), NSForegroundColorAttributeName: UIColor.whiteColor()]
+        self.navigationController?.navigationBar.titleTextAttributes = [NSFontAttributeName : UIFont.systemFont(ofSize: 17), NSForegroundColorAttributeName: UIColor.white]
         
         
-        self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Create".localized(), style: UIBarButtonItemStyle.Plain, target: self, action: #selector(CreateEventViewController.submit(_:)))
+        self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Create".localized(), style: UIBarButtonItemStyle.plain, target: self, action: #selector(CreateEventViewController.submit(_:)))
         
     }
     
-    func close(sender: UIButton) {
-        self.navigationController?.popViewControllerAnimated(true)
+    func close(_ sender: UIButton) {
+        self.navigationController?.popViewController(animated: true)
     }
     
     
     
-    func submit(sender : UIButton) {
+    func submit(_ sender : UIButton) {
         self.createGroup()
     }
     
     
-    @IBAction func openSelectImage(sender: AnyObject) {
-        self.performSegueWithIdentifier("segueOpenSelectImages", sender: nil)
+    @IBAction func openSelectImage(_ sender: AnyObject) {
+        self.performSegue(withIdentifier: "segueOpenSelectImages", sender: nil)
         
     }
     
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject!) {
+    override func prepare(for segue: UIStoryboardSegue, sender: Any!) {
         if segue.identifier == "segueOpenSelectImages"{
-            let vc = segue.destinationViewController as! ListGroupImagesViewControler
+            let vc = segue.destination as! ListGroupImagesViewControler
             vc.delegate = self
         }
         
         if segue.identifier == "segueAddContactsToGroup" {
-            let destinationVC = segue.destinationViewController as! AddContactsToGroupViewController
+            let destinationVC = segue.destination as! AddContactsToGroupViewController
             
             let object = sender as! PFObject
 
-            let group = GroupModel(_idGroup: object.objectId!, _titleGroup: object.valueForKey("title") as! String, _typeGroup: object.valueForKey("type") as! String, _imageUrlGroup: "group_\(object.valueForKey("type") as! String)")
+            let group = GroupModel(_idGroup: object.objectId!, _titleGroup: object.value(forKey: "title") as! String, _typeGroup: object.value(forKey: "type") as! String, _imageUrlGroup: "group_\(object.value(forKey: "type") as! String)")
 
             let realm = try! Realm()
 
@@ -111,12 +111,12 @@ class AddGroupViewController: BaseViewController {
         self.hudShow()
         let objectEvent = PFObject(className: "Group")
         
-        objectEvent.setValue(self.tfNameGroup.text?.capitalizedString, forKey: "title")
+        objectEvent.setValue(self.tfNameGroup.text?.capitalized, forKey: "title")
         objectEvent.setValue(self.typeGroup, forKey: "type")
-        objectEvent.setObject(PFUser.currentUser()!, forKey: "user")
-        objectEvent.saveInBackgroundWithBlock { (done: Bool, error: NSError?) -> Void in
+        objectEvent.setObject(PFUser.current()!, forKey: "user")
+        objectEvent.saveInBackground { (done: Bool, error: NSError?) -> Void in
             if error == nil {
-                self.performSegueWithIdentifier("segueAddContactsToGroup", sender: objectEvent)
+                self.performSegue(withIdentifier: "segueAddContactsToGroup", sender: objectEvent)
             }
             self.hudHide()
         }
@@ -124,7 +124,7 @@ class AddGroupViewController: BaseViewController {
 }
 
 extension AddGroupViewController : ImageGroupSelectControllerDelegate {
-    func selectImageFinished(image: UIImage, type: String) {
+    func selectImageFinished(_ image: UIImage, type: String) {
         self.ivImageGroup.image = image
         self.typeGroup = type
     }

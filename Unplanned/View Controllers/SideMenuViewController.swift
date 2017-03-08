@@ -14,16 +14,16 @@ let friednsListNavStoryboardId = "friendsListNav"
 
 class SideMenuViewController:BaseViewController
 {
-    @IBAction func btnFriendsListTap(sender: AnyObject) {
+    @IBAction func btnFriendsListTap(_ sender: AnyObject) {
         setContentVC(friednsListNavStoryboardId)
     }
     
-    func setContentVC(identifier:String)
+    func setContentVC(_ identifier:String)
     {
         
     }
 
-    @IBAction func btnLogoutTap(sender: AnyObject) {
+    @IBAction func btnLogoutTap(_ sender: AnyObject) {
         Digits.sharedInstance().logOut()
         PFUser.logOut()
         AppDelegate.delegate.setAuthVC()

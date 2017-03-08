@@ -11,15 +11,16 @@ import Parse
 
 class UserModel: PFUser
 {
+    private static var __once: () = { self.registerSubclass() }()
     override class func initialize() {
-        struct Static { static var onceToken : dispatch_once_t = 0; }
-        dispatch_once(&Static.onceToken) { self.registerSubclass() }
+        struct Static { static var onceToken : Int = 0; }
+        _ = UserModel.__once
     }
     
     @NSManaged var isProfileCreated:Bool
     @NSManaged var firstName: String?
     @NSManaged var lastName: String?
-    @NSManaged var birthday: NSDate?
+    @NSManaged var birthday: Date?
     @NSManaged var photo:PFFile?
     
     @NSManaged var digitsUserId:String?

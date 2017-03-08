@@ -20,7 +20,7 @@ class FriendsFinderHelper
 
     class func startObservingAddressBookChanges () {
 
-        addressBook.startObserveChangesWithCallback({
+        addressBook.startObserveChanges(callback: {
 
             FriendsFinderHelper.startMatchingParseFriendsWithDigits(sendNotificationsToMatchedUsers: false, completionBlock: {
 
@@ -28,7 +28,7 @@ class FriendsFinderHelper
         });
     }
 
-    class func startMatchingParseFriendsWithDigits(sendNotificationsToMatchedUsers sendNotifications: Bool, completionBlock: VoidBlock) {
+    class func startMatchingParseFriendsWithDigits(sendNotificationsToMatchedUsers sendNotifications: Bool, completionBlock: @escaping VoidBlock) {
 
         GCDQueue.mainQueue.queueBlock({
             guard let session = Digits.sharedInstance().session() else {
@@ -53,7 +53,7 @@ class FriendsFinderHelper
         }, afterDelay: 0.5)
     }
 
-    class func findDigitsFriends(session: DGTSession, sendNotifications: Bool,completionBlock:VoidBlock)
+    class func findDigitsFriends(_ session: DGTSession, sendNotifications: Bool,completionBlock:@escaping VoidBlock)
     {
         // TODO: add matching for next batch for > 100 matches
         
@@ -72,12 +72,12 @@ class FriendsFinderHelper
     
     
     
-    class func saveParseUsers(digitIds:[String], sendNotifications : Bool, completionBlock:VoidBlock)
+    class func saveParseUsers(_ digitIds:[String], sendNotifications : Bool, completionBlock:@escaping VoidBlock)
     {
-        guard let user = UserModel.currentUser(), query = UserModel.query() else { return }
+        guard let user = UserModel.current(), let query = UserModel.query() else { return }
         
         query.whereKey("digitsUserId", containedIn: digitIds)
-        query.findObjectsInBackgroundWithBlock { (users, error) in
+        query.findObjectsInBackground { (users, error) in
             guard let users = users as? Array<UserModel> else {
                 completionBlock()
                 UIMsg("Failed to find parse users \(error?.localizedDescription ?? "")")
@@ -88,8 +88,8 @@ class FriendsFinderHelper
             
             
             var fullName = ""
-            if let fName = PFUser.currentUser()!.valueForKey("firstName") as? String {
-                if let lName = PFUser.currentUser()!.valueForKey("lastName") as? String {
+            if let fName = PFUser.current()!.value(forKey: "firstName") as? String {
+                if let lName = PFUser.current()!.value(forKey: "lastName") as? String {
                     fullName = "\(fName) \(lName)"
                 }
             }
@@ -105,7 +105,7 @@ class FriendsFinderHelper
             
             user.setObject(usersArray, forKey: "allFriends")
             
-            user.saveInBackgroundWithBlock({ (success, error) in
+            user.saveInBackground(block: { (success, error) in
                 guard success else {
                     completionBlock()
                     UIMsg("Failed to save parse friends \(error?.localizedDescription ?? "")")

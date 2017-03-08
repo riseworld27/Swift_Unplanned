@@ -14,8 +14,8 @@ class Client {
     
     
     static let instance = Client()
-    private init () {}
-    func searchWithTerm(term:String,ll:(lat:Double, long:Double), offset:Int, open:OpenType,completion:FSqData) -> () {
+    fileprivate init () {}
+    func searchWithTerm(_ term:String,ll:(lat:Double, long:Double), offset:Int, open:OpenType,completion:@escaping FSqData) -> () {
         
         let urlString = "\(URL_BASE)\(URL_EXPLORE)ll=\(ll.lat),\(ll.long)&venuePhotos=1&client_id=\(CLIENT_ID)&client_secret=\(CLIENT_SECRET)&limit=50&open=\(open.rawValue)&query=\(term)&offset=\(offset)&v=\(API_VERSION)"
         
@@ -24,7 +24,7 @@ class Client {
         }
     }
     
-    func searchWithCategory(category:String,ll:(lat:Double,long:Double), offset:Int, open:OpenType, completion: FSqData) -> ()  {
+    func searchWithCategory(_ category:String,ll:(lat:Double,long:Double), offset:Int, open:OpenType, completion: @escaping FSqData) -> ()  {
         let urlString = "\(URL_BASE)\(URL_EXPLORE)ll=\(ll.lat),\(ll.long)&venuePhotos=1&client_id=\(CLIENT_ID)&client_secret=\(CLIENT_SECRET)&limit=50&open=\(open.rawValue)&offset=\(offset)&v=\(API_VERSION)&query=\(category)"
         
         
@@ -34,7 +34,7 @@ class Client {
         
     }
     
-    private func getVenuesWithJSON(data:NSData?) -> [VenuesModel] {
+    fileprivate func getVenuesWithJSON(_ data:Data?) -> [VenuesModel] {
         if  let metaData = data {
             
             let jsonData = JSON(data: metaData)
@@ -50,17 +50,17 @@ class Client {
         }
     }
     
-    private func getDataWithSession(urlString:String,completion:FSqData) -> () {
+    fileprivate func getDataWithSession(_ urlString:String,completion:@escaping FSqData) -> () {
         if let url = checkURL(urlString) {
-            let session = NSURLSession.sharedSession()
-            session.dataTaskWithURL(url) { (data, response, error) in
+            let session = URLSession.shared
+            session.dataTask(with: url, completionHandler: { (data, response, error) in
                 if error == nil {
                     let venues = self.getVenuesWithJSON(data)
                     completion(venues)
                 } else {
                     print(error)
                 }
-                }.resume()
+                }) .resume()
         }
     }
     

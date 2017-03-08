@@ -14,34 +14,34 @@ class TouchAuthorizer : Authorizer {
     weak var delegate: SessionAuthorizationDelegate?
     var authorizationViewController: AuthorizationViewController?
     
-    func authorize(viewController: UIViewController, delegate: SessionAuthorizationDelegate?,
-        completionHandler: (String?, NSError?) -> Void) {
+    func authorize(_ viewController: UIViewController, delegate: SessionAuthorizationDelegate?,
+        completionHandler: @escaping (String?, NSError?) -> Void) {
         
         authorizationViewController = AuthorizationViewController(authorizationURL: authorizationURL,
             redirectURL: redirectURL, delegate: self)
         authorizationViewController!.shouldControllNetworkActivityIndicator = shouldControllNetworkActivityIndicator
 
         let navigationController = AuthorizationNavigationController(rootViewController: authorizationViewController!)
-        navigationController.modalPresentationStyle = .FormSheet
+        navigationController.modalPresentationStyle = .formSheet
         delegate?.sessionWillPresentAuthorizationViewController?(authorizationViewController!)
-        viewController.presentViewController(navigationController, animated: true, completion: nil)
+        viewController.present(navigationController, animated: true, completion: nil)
         
         self.presentingViewController = viewController
         self.completionHandler = completionHandler
         self.delegate = delegate
     }
     
-    override func finilizeAuthorization(accessToken: String?, error: NSError?) {
+    override func finilizeAuthorization(_ accessToken: String?, error: NSError?) {
         if authorizationViewController != nil {
             delegate?.sessionWillDismissAuthorizationViewController?(authorizationViewController!)
         }
-        presentingViewController?.dismissViewControllerAnimated(true) {
+        presentingViewController?.dismiss(animated: true) {
             self.didDismissViewController(accessToken, error: error)
             self.authorizationViewController = nil
         }
     }
     
-    func didDismissViewController(accessToken: String?, error: NSError?) {
+    func didDismissViewController(_ accessToken: String?, error: NSError?) {
         super.finilizeAuthorization(accessToken, error: error)
     }
     

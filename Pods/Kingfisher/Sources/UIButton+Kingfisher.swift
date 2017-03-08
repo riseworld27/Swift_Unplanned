@@ -45,7 +45,7 @@ extension UIButton {
      - note: Both the `progressBlock` and `completionHandler` will be invoked in main thread.
      The `CallbackDispatchQueue` specified in `optionsInfo` will not be used in callbacks of this method.
      */
-    public func kf_setImageWithURL(URL: NSURL,
+    public func kf_setImageWithURL(_ URL: Foundation.URL,
                                    forState state: UIControlState,
                                             placeholderImage: UIImage? = nil,
                                             optionsInfo: KingfisherOptionsInfo? = nil,
@@ -76,15 +76,15 @@ extension UIButton {
     - note: Both the `progressBlock` and `completionHandler` will be invoked in main thread.
      The `CallbackDispatchQueue` specified in `optionsInfo` will not be used in callbacks of this method.
     */
-    public func kf_setImageWithResource(resource: Resource,
+    public func kf_setImageWithResource(_ resource: Resource,
                                   forState state: UIControlState,
                                 placeholderImage: UIImage? = nil,
                                      optionsInfo: KingfisherOptionsInfo? = nil,
                                    progressBlock: DownloadProgressBlock? = nil,
                                completionHandler: CompletionHandler? = nil) -> RetrieveImageTask
     {
-        setImage(placeholderImage, forState: state)
-        kf_setWebURL(resource.downloadURL, forState: state)
+        setImage(placeholderImage, for: state)
+        kf_setWebURL(resource.downloadURL as URL, forState: state)
         let task = KingfisherManager.sharedManager.retrieveImageWithResource(resource, optionsInfo: optionsInfo,
             progressBlock: { receivedSize, totalSize in
                 if let progressBlock = progressBlock {
@@ -98,7 +98,7 @@ extension UIButton {
                         sSelf.kf_setImageTask(nil)
                         
                         if imageURL == sSelf.kf_webURLForState(state) && image != nil {
-                            sSelf.setImage(image, forState: state)
+                            sSelf.setImage(image, for: state)
                         }
                         completionHandler?(image: image, error: error, cacheType: cacheType, imageURL: imageURL)
                     }
@@ -122,15 +122,15 @@ extension UIButton {
     
     - returns: Current URL for image.
     */
-    public func kf_webURLForState(state: UIControlState) -> NSURL? {
-        return kf_webURLs[NSNumber(unsignedLong:state.rawValue)] as? NSURL
+    public func kf_webURLForState(_ state: UIControlState) -> URL? {
+        return kf_webURLs[NSNumber(value: state.rawValue as UInt)] as? URL
     }
     
-    private func kf_setWebURL(URL: NSURL, forState state: UIControlState) {
-        kf_webURLs[NSNumber(unsignedLong:state.rawValue)] = URL
+    fileprivate func kf_setWebURL(_ URL: Foundation.URL, forState state: UIControlState) {
+        kf_webURLs[NSNumber(value: state.rawValue as UInt)] = URL
     }
     
-    private var kf_webURLs: NSMutableDictionary {
+    fileprivate var kf_webURLs: NSMutableDictionary {
         var dictionary = objc_getAssociatedObject(self, &lastURLKey) as? NSMutableDictionary
         if dictionary == nil {
             dictionary = NSMutableDictionary()
@@ -139,15 +139,15 @@ extension UIButton {
         return dictionary!
     }
     
-    private func kf_setWebURLs(URLs: NSMutableDictionary) {
+    fileprivate func kf_setWebURLs(_ URLs: NSMutableDictionary) {
         objc_setAssociatedObject(self, &lastURLKey, URLs, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
     }
     
-    private var kf_imageTask: RetrieveImageTask? {
+    fileprivate var kf_imageTask: RetrieveImageTask? {
         return objc_getAssociatedObject(self, &imageTaskKey) as? RetrieveImageTask
     }
     
-    private func kf_setImageTask(task: RetrieveImageTask?) {
+    fileprivate func kf_setImageTask(_ task: RetrieveImageTask?) {
         objc_setAssociatedObject(self, &imageTaskKey, task, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
     }
 }
@@ -172,7 +172,7 @@ extension UIButton {
      - note: Both the `progressBlock` and `completionHandler` will be invoked in main thread.
      The `CallbackDispatchQueue` specified in `optionsInfo` will not be used in callbacks of this method.
      */
-    public func kf_setBackgroundImageWithURL(URL: NSURL,
+    public func kf_setBackgroundImageWithURL(_ URL: Foundation.URL,
                                              forState state: UIControlState,
                                                       placeholderImage: UIImage? = nil,
                                                       optionsInfo: KingfisherOptionsInfo? = nil,
@@ -204,15 +204,15 @@ extension UIButton {
     - note: Both the `progressBlock` and `completionHandler` will be invoked in main thread.
      The `CallbackDispatchQueue` specified in `optionsInfo` will not be used in callbacks of this method.
     */
-    public func kf_setBackgroundImageWithResource(resource: Resource,
+    public func kf_setBackgroundImageWithResource(_ resource: Resource,
                                             forState state: UIControlState,
                                           placeholderImage: UIImage? = nil,
                                                optionsInfo: KingfisherOptionsInfo? = nil,
                                              progressBlock: DownloadProgressBlock? = nil,
                                          completionHandler: CompletionHandler? = nil) -> RetrieveImageTask
     {
-        setBackgroundImage(placeholderImage, forState: state)
-        kf_setBackgroundWebURL(resource.downloadURL, forState: state)
+        setBackgroundImage(placeholderImage, for: state)
+        kf_setBackgroundWebURL(resource.downloadURL as URL, forState: state)
         let task = KingfisherManager.sharedManager.retrieveImageWithResource(resource, optionsInfo: optionsInfo,
             progressBlock: { receivedSize, totalSize in
                 if let progressBlock = progressBlock {
@@ -226,7 +226,7 @@ extension UIButton {
                         sSelf.kf_setBackgroundImageTask(nil)
                         
                         if imageURL == sSelf.kf_backgroundWebURLForState(state) && image != nil {
-                            sSelf.setBackgroundImage(image, forState: state)
+                            sSelf.setBackgroundImage(image, for: state)
                         }
                         completionHandler?(image: image, error: error, cacheType: cacheType, imageURL: imageURL)
                     }
@@ -250,15 +250,15 @@ extension UIButton {
     
     - returns: Current URL for background image.
     */
-    public func kf_backgroundWebURLForState(state: UIControlState) -> NSURL? {
-        return kf_backgroundWebURLs[NSNumber(unsignedLong:state.rawValue)] as? NSURL
+    public func kf_backgroundWebURLForState(_ state: UIControlState) -> URL? {
+        return kf_backgroundWebURLs[NSNumber(value: state.rawValue as UInt)] as? URL
     }
     
-    private func kf_setBackgroundWebURL(URL: NSURL, forState state: UIControlState) {
-        kf_backgroundWebURLs[NSNumber(unsignedLong:state.rawValue)] = URL
+    fileprivate func kf_setBackgroundWebURL(_ URL: Foundation.URL, forState state: UIControlState) {
+        kf_backgroundWebURLs[NSNumber(value: state.rawValue as UInt)] = URL
     }
     
-    private var kf_backgroundWebURLs: NSMutableDictionary {
+    fileprivate var kf_backgroundWebURLs: NSMutableDictionary {
         var dictionary = objc_getAssociatedObject(self, &lastBackgroundURLKey) as? NSMutableDictionary
         if dictionary == nil {
             dictionary = NSMutableDictionary()
@@ -267,15 +267,15 @@ extension UIButton {
         return dictionary!
     }
     
-    private func kf_setBackgroundWebURLs(URLs: NSMutableDictionary) {
+    fileprivate func kf_setBackgroundWebURLs(_ URLs: NSMutableDictionary) {
         objc_setAssociatedObject(self, &lastBackgroundURLKey, URLs, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
     }
     
-    private var kf_backgroundImageTask: RetrieveImageTask? {
+    fileprivate var kf_backgroundImageTask: RetrieveImageTask? {
         return objc_getAssociatedObject(self, &backgroundImageTaskKey) as? RetrieveImageTask
     }
     
-    private func kf_setBackgroundImageTask(task: RetrieveImageTask?) {
+    fileprivate func kf_setBackgroundImageTask(_ task: RetrieveImageTask?) {
         objc_setAssociatedObject(self, &backgroundImageTaskKey, task, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
     }
 }

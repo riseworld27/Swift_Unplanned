@@ -19,28 +19,28 @@ class AppDelegate: UIResponder, UIApplicationDelegate
     var window: UIWindow?
     var pushNotificationController:PushNotificationController?
 
-    class var delegate:AppDelegate { get { return UIApplication.sharedApplication().delegate! as! AppDelegate } }
+    class var delegate:AppDelegate { get { return UIApplication.shared.delegate! as! AppDelegate } }
     
-    func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool
+    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool
     {
         let configuration = ParseClientConfiguration {
             $0.applicationId = "O2EoKviDXMzRp4FKVtAQZpWXxG3ghSAjLJlWUcKq"
             $0.clientKey = "JreyDvMTYQlMfA9UcpxZcyLfzUUKLpW3rsoEU4wg"
         }
-        Parse.initializeWithConfiguration(configuration)
+        Parse.initialize(with: configuration)
         PFUser.enableRevocableSessionInBackground()
         
         Fabric.with([Digits.self(), Crashlytics.self(), Answers.self()])
         
-        if PFUser.currentUser() != nil {
+        if PFUser.current() != nil {
             setLoggedInVC(false)
             
-            let firstLaunch = NSUserDefaults.standardUserDefaults().boolForKey("FirstLaunch")
+            let firstLaunch = UserDefaults.standard.bool(forKey: "FirstLaunch")
             
             if (!firstLaunch){
-                registerPFUserForPushNotifications(PFUser.currentUser()!)
+                registerPFUserForPushNotifications(PFUser.current()!)
                 
-                NSUserDefaults.standardUserDefaults().setBool(true, forKey: "FirstLaunch")
+                UserDefaults.standard.set(true, forKey: "FirstLaunch")
             }
 
             FriendsFinderHelper.startMatchingParseFriendsWithDigits(sendNotificationsToMatchedUsers: false, completionBlock: {
@@ -50,19 +50,19 @@ class AppDelegate: UIResponder, UIApplicationDelegate
 
         FriendsFinderHelper.startObservingAddressBookChanges()
 
-        if application.applicationState != UIApplicationState.Background {
+        if application.applicationState != UIApplicationState.background {
             // Track an app open here if we launch with a push, unless
             // "content_available" was used to trigger a background push (introduced in iOS 7).
             // In that case, we skip tracking here to avoid double counting the app-open.
             
-            let preBackgroundPush = !application.respondsToSelector(Selector("backgroundRefreshStatus"))
-            let oldPushHandlerOnly = !self.respondsToSelector(#selector(UIApplicationDelegate.application(_:didReceiveRemoteNotification:fetchCompletionHandler:)))
+            let preBackgroundPush = !application.responds(to: #selector(getter: UIApplication.backgroundRefreshStatus))
+            let oldPushHandlerOnly = !self.responds(to: #selector(UIApplicationDelegate.application(_:didReceiveRemoteNotification:fetchCompletionHandler:)))
             var noPushPayload = false;
             if let options = launchOptions {
-                noPushPayload = options[UIApplicationLaunchOptionsRemoteNotificationKey] != nil;
+                noPushPayload = options[UIApplicationLaunchOptionsKey.remoteNotification] != nil;
             }
             if (preBackgroundPush || oldPushHandlerOnly || noPushPayload) {
-                PFAnalytics.trackAppOpenedWithLaunchOptions(launchOptions)
+                PFAnalytics.trackAppOpened(launchOptions: launchOptions)
             }
         }
         
@@ -70,28 +70,28 @@ class AppDelegate: UIResponder, UIApplicationDelegate
         self.pushNotificationController = PushNotificationController()
         
         // Register for Push Notitications, if running iOS 8
-        if application.respondsToSelector(#selector(UIApplication.registerUserNotificationSettings(_:))) {
-            let settings:UIUserNotificationSettings = UIUserNotificationSettings(forTypes: [.Alert, .Badge, .Sound], categories: nil)
+        if application.responds(to: #selector(UIApplication.registerUserNotificationSettings(_:))) {
+            let settings:UIUserNotificationSettings = UIUserNotificationSettings(types: [.alert, .badge, .sound], categories: nil)
             
             application.registerUserNotificationSettings(settings)
             application.registerForRemoteNotifications()
             
         } else {
             // Register for Push Notifications before iOS 8
-            application.registerForRemoteNotificationTypes([.Alert, .Badge, .Sound])
+            application.registerForRemoteNotifications(matching: [.alert, .badge, .sound])
         }
         
         
         return true
     }
     
-    func application(application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: NSData) {
-        let installation = PFInstallation.currentInstallation()
-        installation.setDeviceTokenFromData(deviceToken)
+    func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
+        let installation = PFInstallation.current()
+        installation.setDeviceTokenFrom(deviceToken)
         installation.saveInBackground()
     }
     
-    func application(application: UIApplication, didFailToRegisterForRemoteNotificationsWithError error: NSError) {
+    func application(_ application: UIApplication, didFailToRegisterForRemoteNotificationsWithError error: Error) {
         if error.code == 3010 {
             print("Push notifications are not supported in the iOS Simulator.")
         } else {
@@ -99,21 +99,21 @@ class AppDelegate: UIResponder, UIApplicationDelegate
         }
     }
     
-    func application(application: UIApplication, didReceiveRemoteNotification userInfo: [NSObject : AnyObject]) {
+    func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable: Any]) {
         print("didReceiveRemoteNotification")
         
-        if application.applicationState == .Inactive {
+        if application.applicationState == .inactive {
             // The application was just brought from the background to the foreground, so we consider the app as having been "opened by a push notification."
-            PFAnalytics.trackAppOpenedWithRemoteNotificationPayload(userInfo)
+            PFAnalytics.trackAppOpened(withRemoteNotificationPayload: userInfo)
         }
         
         
-        PFPush.handlePush(userInfo)
+        PFPush.handle(userInfo)
 
         NotificationsHelper.badgeNotification.post(nil)
     }
     
-    func applicationDidBecomeActive(application: UIApplication) {
+    func applicationDidBecomeActive(_ application: UIApplication) {
 
     }
     
@@ -125,20 +125,20 @@ class AppDelegate: UIResponder, UIApplicationDelegate
 
     func setAuthVC()
     {
-        guard let newVc = storyboard().instantiateInitialViewController(), currentVc = window?.rootViewController else { return }
+        guard let newVc = storyboard().instantiateInitialViewController(), let currentVc = window?.rootViewController else { return }
         
-        UIView.transitionFromView(currentVc.view, toView: newVc.view, duration: 0.4, options: .TransitionFlipFromLeft) { (finished) in
+        UIView.transition(from: currentVc.view, to: newVc.view, duration: 0.4, options: .transitionFlipFromLeft) { (finished) in
             if finished { self.window?.rootViewController = newVc }
         }
     }
     
-    func setLoggedInVC(animated:Bool)
+    func setLoggedInVC(_ animated:Bool)
     {
         guard let currentVc = window?.rootViewController else { return }
         
-        let newVc = UserModel.currentUser()!.isProfileCreated ? mainMenuVc() : storyboard().instantiateViewControllerWithIdentifier("CreateProfileViewController") as! CreateProfileViewController
+        let newVc = UserModel.current()!.isProfileCreated ? mainMenuVc() : storyboard().instantiateViewController(withIdentifier: "CreateProfileViewController") as! CreateProfileViewController
         self.window?.rootViewController = UINavigationController(rootViewController: newVc)
-        UIView.transitionFromView(currentVc.view, toView: newVc.view, duration: animated ? 0.4 : 0, options: .TransitionFlipFromRight) { (finished) in
+        UIView.transition(from: currentVc.view, to: newVc.view, duration: animated ? 0.4 : 0, options: .transitionFlipFromRight) { (finished) in
             if finished {
                 //self.window?.rootViewController = UINavigationController(rootViewController: newVc)
             }
@@ -148,7 +148,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate
     func mainMenuVc() -> UIViewController{
         
         
-        let feedVC = storyboard().instantiateViewControllerWithIdentifier("FeedViewController") as! FeedViewController
+        let feedVC = storyboard().instantiateViewController(withIdentifier: "FeedViewController") as! FeedViewController
         self.window?.rootViewController = UINavigationController(rootViewController: feedVC)
         
         return feedVC

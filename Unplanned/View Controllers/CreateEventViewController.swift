@@ -57,15 +57,15 @@ class CreateEventViewController: BaseViewController {
         tabLocation.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(CreateEventViewController.pressedLocation(_:))))
         tabDate.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(CreateEventViewController.pressedDate(_:))))
         tabGroups.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(CreateEventViewController.pressedGroups(_:))))
-        controllerLocation = self.storyboard!.instantiateViewControllerWithIdentifier("EventLocationViewController") as! EventLocationViewController
-        controllerGroup = self.storyboard!.instantiateViewControllerWithIdentifier("EventGroupViewController") as! EventGroupViewController
-        controllerDate = self.storyboard!.instantiateViewControllerWithIdentifier("EventDateViewController") as! EventDateViewController
+        controllerLocation = self.storyboard!.instantiateViewController(withIdentifier: "EventLocationViewController") as! EventLocationViewController
+        controllerGroup = self.storyboard!.instantiateViewController(withIdentifier: "EventGroupViewController") as! EventGroupViewController
+        controllerDate = self.storyboard!.instantiateViewController(withIdentifier: "EventDateViewController") as! EventDateViewController
         
         controllerLocation.foursquareId = self.foursquareId
         
         addLocationController()
         
-        self.labelTitle.text = titleText.capitalizedString.localized()
+        self.labelTitle.text = titleText.capitalized.localized()
         self.ivCreateEvent.image = backgroundImage
     }
     
@@ -87,22 +87,22 @@ class CreateEventViewController: BaseViewController {
         }
         
         
-        controllerLocation.view.frame = CGRectMake(0, 320, self.view.width(), self.view.height() - 320);
-        controllerLocation.willMoveToParentViewController(self)
+        controllerLocation.view.frame = CGRect(x: 0, y: 320, width: self.view.width(), height: self.view.height() - 320);
+        controllerLocation.willMove(toParentViewController: self)
         self.view.insertSubview(controllerLocation.view, belowSubview: tabLocation)
         self.addChildViewController(controllerLocation)
-        controllerLocation.didMoveToParentViewController(self)
+        controllerLocation.didMove(toParentViewController: self)
     }
     
     func loadFriends() {
         
         self.friendsList.removeAll()
 
-        let user = PFUser.currentUser()
+        let user = PFUser.current()
 
         user?.fetchInBackground()
 
-        self.friendsList = (user?.objectForKey("allFriends") as? [String]) ?? []
+        self.friendsList = (user?.object(forKey: "allFriends") as? [String]) ?? []
     }
     
     func addDateController(){
@@ -115,11 +115,11 @@ class CreateEventViewController: BaseViewController {
         controllerGroup.removeFromParentViewController()
         }
         
-        controllerDate.view.frame = CGRectMake(0, 320, self.view.width(), self.view.height() - 320);
-        controllerDate.willMoveToParentViewController(self)
+        controllerDate.view.frame = CGRect(x: 0, y: 320, width: self.view.width(), height: self.view.height() - 320);
+        controllerDate.willMove(toParentViewController: self)
         self.view.insertSubview(controllerDate.view, belowSubview: tabLocation)
         self.addChildViewController(controllerDate)
-        controllerDate.didMoveToParentViewController(self)
+        controllerDate.didMove(toParentViewController: self)
     }
     
     func addGroupController() {
@@ -133,11 +133,11 @@ class CreateEventViewController: BaseViewController {
         }
         
         //controller.ANYPROPERTY=THEVALUE // If you want to pass value
-        controllerGroup.view.frame = CGRectMake(0, 320, self.view.width(), self.view.height() - 320);
-        controllerGroup.willMoveToParentViewController(self)
+        controllerGroup.view.frame = CGRect(x: 0, y: 320, width: self.view.width(), height: self.view.height() - 320);
+        controllerGroup.willMove(toParentViewController: self)
         self.view.insertSubview(controllerGroup.view, belowSubview: tabLocation)
         self.addChildViewController(controllerGroup)
-        controllerGroup.didMoveToParentViewController(self)
+        controllerGroup.didMove(toParentViewController: self)
 
     }
     
@@ -145,35 +145,35 @@ class CreateEventViewController: BaseViewController {
     func createNavigationBarButtons(){
         var menuImage:UIImage = UIImage(named: "icon_close_event")!
         
-        menuImage = menuImage.imageWithRenderingMode(UIImageRenderingMode.AlwaysOriginal)
-        let menuButton: UIButton = UIButton(frame: CGRectMake(20, 20, 25, 25))
-        menuButton.setImage(menuImage, forState: .Normal)
-        menuButton.setImage(menuImage, forState: .Highlighted)
-        menuButton.addTarget(self, action: #selector(CreateEventViewController.close(_:)), forControlEvents:.TouchUpInside)
+        menuImage = menuImage.withRenderingMode(UIImageRenderingMode.alwaysOriginal)
+        let menuButton: UIButton = UIButton(frame: CGRect(x: 20, y: 20, width: 25, height: 25))
+        menuButton.setImage(menuImage, for: UIControlState())
+        menuButton.setImage(menuImage, for: .highlighted)
+        menuButton.addTarget(self, action: #selector(CreateEventViewController.close(_:)), for:.touchUpInside)
         let menuButtonBar = UIBarButtonItem.init(customView: menuButton)
         self.navigationItem.leftBarButtonItem = menuButtonBar
         
-        self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Done".localized(), style: UIBarButtonItemStyle.Plain, target: self, action: #selector(CreateEventViewController.submit(_:)))
+        self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Done".localized(), style: UIBarButtonItemStyle.plain, target: self, action: #selector(CreateEventViewController.submit(_:)))
 
         
     }
     
-    func close(sender: UIButton) {
+    func close(_ sender: UIButton) {
         self.setTransparentNavigationBar()
-        self.navigationController?.popViewControllerAnimated(true)
+        self.navigationController?.popViewController(animated: true)
     }
     
-    func submit(sender : UIButton) {
+    func submit(_ sender : UIButton) {
         self.getDetailsOFGroup()
     }
     
-    override func viewWillAppear(animated: Bool) {
+    override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         self.loadFriends()
         self.setupGradienNavigationBar("Create Event".localized())
     }
     
-    func pressedLocation(sender : UITapGestureRecognizer) {
+    func pressedLocation(_ sender : UITapGestureRecognizer) {
         tabLocation.backgroundColor = UIColor(rgba: "#00BEE0")
         tabDate.backgroundColor = UIColor(rgba: "#3b3b3b")
         tabGroups.backgroundColor = UIColor(rgba: "#3b3b3b")
@@ -187,7 +187,7 @@ class CreateEventViewController: BaseViewController {
         
     }
     
-    func pressedDate(sender : UITapGestureRecognizer) {
+    func pressedDate(_ sender : UITapGestureRecognizer) {
         
         
         tabLocation.backgroundColor = UIColor(rgba: "#3b3b3b")
@@ -200,7 +200,7 @@ class CreateEventViewController: BaseViewController {
         self.addDateController()
     }
     
-    func pressedGroups(sender : UITapGestureRecognizer) {
+    func pressedGroups(_ sender : UITapGestureRecognizer) {
         
         tabLocation.backgroundColor = UIColor(rgba: "#3b3b3b")
         tabDate.backgroundColor = UIColor(rgba: "#3b3b3b")
@@ -222,34 +222,34 @@ class CreateEventViewController: BaseViewController {
         objectEvent.setValue(controllerLocation.labelDescriptionLocation.text, forKey: "location_address")
         objectEvent.setValue(controllerDate.selectedDate, forKey: "date")
         objectEvent.setValue(PFGeoPoint(latitude: controllerLocation.currentCoordinates.latitude , longitude: controllerLocation.currentCoordinates.longitude), forKey: "coordinates")
-        objectEvent.addObject((PFUser.currentUser()?.username)!, forKey: "accepted_members")
+        objectEvent.add((PFUser.current()?.username)!, forKey: "accepted_members")
         objectEvent.setValue(controllerGroup.inviteAll, forKey: "invite_all")
         objectEvent.setObject(self.arrayOfNumbers, forKey: "participants")
         objectEvent.setValue(self.typeOfEvent, forKey: "type")
-        objectEvent.setObject(PFUser.currentUser()!, forKey: "user")
-        objectEvent.saveInBackgroundWithBlock { (done: Bool, error: NSError?) -> Void in
+        objectEvent.setObject(PFUser.current()!, forKey: "user")
+        objectEvent.saveInBackground { (done: Bool, error: NSError?) -> Void in
             if error == nil {
                 var name = ""
                 
-                if let fName = PFUser.currentUser()!.valueForKey("firstName") as? String {
+                if let fName = PFUser.current()!.value(forKey: "firstName") as? String {
                     name = fName
-                    if let lName = PFUser.currentUser()!.valueForKey("lastName") as? String {
-                        name.appendContentsOf(" \(lName)")
+                    if let lName = PFUser.current()!.value(forKey: "lastName") as? String {
+                        name.append(" \(lName)")
                     }
                 }
                 for number in self.arrayOfNumbers {
                     
                     if (self.friendsList.contains(number)) {
                     
-                    sendPushNotificationToUser(number, title: "Invition", message: "\(name.capitalizedString) wants to go to \(self.typeOfEvent) with you \(self.timeFormat(self.controllerDate.selectedDate)) \(self.controllerDate.selectedDate.mt_stringValueWithDateStyle(.MediumStyle, timeStyle: .NoStyle)) in \(self.controllerLocation.labelTitleLocation.text!). Click http://google.com to confirm. Download UnPlanned app now http://google.com", pushType: "message")
+                    sendPushNotificationToUser(number, title: "Invition", message: "\(name.capitalized) wants to go to \(self.typeOfEvent) with you \(self.timeFormat(self.controllerDate.selectedDate)) \(self.controllerDate.selectedDate.mt_stringValue(withDateStyle: .medium, time: .none)) in \(self.controllerLocation.labelTitleLocation.text!). Click http://google.com to confirm. Download UnPlanned app now http://google.com", pushType: "message")
                     } else {
                     
-                    self.sendSMS("\(name.capitalizedString) wants to go to \(self.typeOfEvent) with you \(self.timeFormat(self.controllerDate.selectedDate)) \(self.controllerDate.selectedDate.mt_stringValueWithDateStyle(.MediumStyle, timeStyle: .NoStyle)) in \(self.controllerLocation.labelTitleLocation.text!). Click http://google.com to confirm. Download UnPlanned app now http://google.com", phoneNumber: number)
+                    self.sendSMS("\(name.capitalized) wants to go to \(self.typeOfEvent) with you \(self.timeFormat(self.controllerDate.selectedDate)) \(self.controllerDate.selectedDate.mt_stringValue(withDateStyle: .medium, time: .none)) in \(self.controllerLocation.labelTitleLocation.text!). Click http://google.com to confirm. Download UnPlanned app now http://google.com", phoneNumber: number)
                     }
                 }
                 
             }
-            self.navigationController?.popViewControllerAnimated(true)
+            self.navigationController?.popViewController(animated: true)
             self.hudHide()
         }
     }
@@ -266,10 +266,10 @@ class CreateEventViewController: BaseViewController {
             
             var name = ""
             
-            if let fName = PFUser.currentUser()!.valueForKey("firstName") as? String {
+            if let fName = PFUser.current()!.value(forKey: "firstName") as? String {
                 name = fName
-                if let lName = PFUser.currentUser()!.valueForKey("lastName") as? String {
-                    name.appendContentsOf(" \(lName)")
+                if let lName = PFUser.current()!.value(forKey: "lastName") as? String {
+                    name.append(" \(lName)")
                 }
             }
             self.arrayOfNumbers.removeAll()
@@ -278,10 +278,10 @@ class CreateEventViewController: BaseViewController {
                 
                 var phoneStr = ""
                 if contact.phoneNumbers.count > 0 {
-                    let number = contact.phoneNumbers[0].value as! CNPhoneNumber
-                    phoneStr = number.valueForKey("digits") as! String
+                    let number = contact.phoneNumbers[0].value 
+                    phoneStr = number.value(forKey: "digits") as! String
                     
-                    if !phoneStr.containsString("+") {
+                    if !phoneStr.contains("+") {
                         phoneStr = "+52\(phoneStr)"
                     }
                     
@@ -301,15 +301,15 @@ class CreateEventViewController: BaseViewController {
         
         let queryGetEvents = PFQuery(className: "Group_users")
         queryGetEvents.whereKey("group_id", containedIn: idGroups)
-        queryGetEvents.orderByDescending("full_name")
+        queryGetEvents.order(byDescending: "full_name")
         queryGetEvents.includeKey("user")
         
-          queryGetEvents.findObjectsInBackgroundWithBlock { (objects : [PFObject]?, error: NSError?) in
+          queryGetEvents.findObjectsInBackground { (objects : [PFObject]?, error: NSError?) in
             if error == nil {
                 self.arrayOfNumbers.removeAll()
                 for object : PFObject in objects! {
                     
-                    self.arrayOfNumbers.append(object.valueForKey("username") as! String)
+                    self.arrayOfNumbers.append(object.value(forKey: "username") as! String)
                 }
                 self.createEvent()
                 

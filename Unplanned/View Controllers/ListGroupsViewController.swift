@@ -25,7 +25,7 @@ class ListGroupsViewController: BaseViewController, UITableViewDelegate, UITable
         
     }
     
-    override func viewWillAppear(animated: Bool) {
+    override func viewWillAppear(_ animated: Bool) {
         self.setupGradienNavigationBar("My Groups".localized())
         self.createNavigationBarButtons()
         
@@ -36,21 +36,21 @@ class ListGroupsViewController: BaseViewController, UITableViewDelegate, UITable
     func createNavigationBarButtons(){
         var menuImage:UIImage = UIImage(named: "icon_back_button")!
         
-        menuImage = menuImage.imageWithRenderingMode(UIImageRenderingMode.AlwaysOriginal)
-        let menuButton: UIButton = UIButton(frame: CGRectMake(5, 5, 20, 20))
-        menuButton.setImage(menuImage, forState: .Normal)
-        menuButton.setImage(menuImage, forState: .Highlighted)
-        menuButton.addTarget(self, action: #selector(CreateEventViewController.close(_:)), forControlEvents:.TouchUpInside)
+        menuImage = menuImage.withRenderingMode(UIImageRenderingMode.alwaysOriginal)
+        let menuButton: UIButton = UIButton(frame: CGRect(x: 5, y: 5, width: 20, height: 20))
+        menuButton.setImage(menuImage, for: UIControlState())
+        menuButton.setImage(menuImage, for: .highlighted)
+        menuButton.addTarget(self, action: #selector(CreateEventViewController.close(_:)), for:.touchUpInside)
         let menuButtonBar = UIBarButtonItem.init(customView: menuButton)
         self.navigationItem.leftBarButtonItem = menuButtonBar
         
     }
     
-    func close(sender: UIButton) {
-        self.navigationController?.popViewControllerAnimated(true)
+    func close(_ sender: UIButton) {
+        self.navigationController?.popViewController(animated: true)
     }
     
-    func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
 
         if section == 0 {
             return 1
@@ -59,12 +59,12 @@ class ListGroupsViewController: BaseViewController, UITableViewDelegate, UITable
         return listGroups.count
     }
 
-    func numberOfSectionsInTableView(tableView: UITableView) -> Int {
+    func numberOfSections(in tableView: UITableView) -> Int {
         return 2
     }
 
-    func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCellWithIdentifier("GroupListTableViewCell") as! GroupListTableViewCell
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: "GroupListTableViewCell") as! GroupListTableViewCell
         
         
         
@@ -84,23 +84,23 @@ class ListGroupsViewController: BaseViewController, UITableViewDelegate, UITable
         
     }
     
-    func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         
         
         if indexPath.section == 0 {
-            self.performSegueWithIdentifier("segueAddGroup", sender: nil)
+            self.performSegue(withIdentifier: "segueAddGroup", sender: nil)
         } else {
-            self.performSegueWithIdentifier("segueShowContactsInGroup", sender: indexPath.row)
+            self.performSegue(withIdentifier: "segueShowContactsInGroup", sender: indexPath.row)
         }
     }
     
-    func tableView(tableView: UITableView, canEditRowAtIndexPath indexPath: NSIndexPath) -> Bool {
+    func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
         return indexPath.section == 1
     }
     
-    func tableView(tableView: UITableView, editActionsForRowAtIndexPath indexPath: NSIndexPath) -> [UITableViewRowAction]? {
+    func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]? {
         
-        let delete = UITableViewRowAction(style: .Normal, title: "Delete".localized()) { action, index in
+        let delete = UITableViewRowAction(style: .normal, title: "Delete".localized()) { action, index in
             print("more button tapped")
             
             if indexPath.section == 1 {
@@ -110,11 +110,11 @@ class ListGroupsViewController: BaseViewController, UITableViewDelegate, UITable
                 let query = PFQuery(className: "Group")
                 query.whereKey("objectId", equalTo: group.idGroup)
 
-                query.findObjectsInBackgroundWithBlock { (objects : [PFObject]?, error: NSError?) -> Void in
+                query.findObjectsInBackground { (objects : [PFObject]?, error: NSError?) -> Void in
 
                     if let objs = objects {
                         for object in objs {
-                            object.deleteInBackgroundWithBlock({ (value: Bool, error : NSError?) in
+                            object.deleteInBackground(block: { (value: Bool, error : NSError?) in
                                 if value == false {
 
                                     self.getGroups()
@@ -134,7 +134,7 @@ class ListGroupsViewController: BaseViewController, UITableViewDelegate, UITable
             }
             
         }
-        delete.backgroundColor = UIColor.redColor()
+        delete.backgroundColor = UIColor.red
         
         
         return [delete]
@@ -143,18 +143,18 @@ class ListGroupsViewController: BaseViewController, UITableViewDelegate, UITable
     func getGroups() {
 
         let queryGetEvents = PFQuery(className: "Group")
-        queryGetEvents.whereKey("user", equalTo: PFUser.currentUser()!)
-        queryGetEvents.orderByDescending("createdAt")
+        queryGetEvents.whereKey("user", equalTo: PFUser.current()!)
+        queryGetEvents.order(byDescending: "createdAt")
         queryGetEvents.includeKey("user")
         
-        queryGetEvents.findObjectsInBackgroundWithBlock { (objects : [PFObject]?, error: NSError?) in
+        queryGetEvents.findObjectsInBackground { (objects : [PFObject]?, error: NSError?) in
             if error == nil {
 
                 let realm = try! Realm()
 
                 for object : PFObject in objects! {
 
-                    let group = GroupModel(_idGroup: object.objectId!, _titleGroup: object.valueForKey("title") as! String, _typeGroup: object.valueForKey("type") as! String, _imageUrlGroup: "group_\(object.valueForKey("type") as! String)")
+                    let group = GroupModel(_idGroup: object.objectId!, _titleGroup: object.value(forKey: "title") as! String, _typeGroup: object.value(forKey: "type") as! String, _imageUrlGroup: "group_\(object.value(forKey: "type") as! String)")
 
                     try! realm.write {
                         realm.add(group, update: true)
@@ -168,9 +168,9 @@ class ListGroupsViewController: BaseViewController, UITableViewDelegate, UITable
         }
     }
     
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "segueShowContactsInGroup" {
-            let destinationVC = segue.destinationViewController as! ListContactsInGroupViewController
+            let destinationVC = segue.destination as! ListContactsInGroupViewController
             destinationVC.selectedGroup = self.listGroups[sender as! Int]
         }
     }

@@ -11,31 +11,31 @@ import UIAlertControllerExtension
 import MBProgressHUD
 
 typealias VoidBlock = ()->()
-func after(delay:Double, block:VoidBlock) {
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (Int64)(delay * Double(NSEC_PER_SEC))), dispatch_get_main_queue(), block)
+func after(_ delay:Double, block:@escaping VoidBlock) {
+    DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + Double((Int64)(delay * Double(NSEC_PER_SEC))) / Double(NSEC_PER_SEC), execute: block)
 }
 
 extension NSObject {    
-    class var className:String { get { return NSStringFromClass(self).componentsSeparatedByString(".").last ?? "---ERROR can't get className---" } }
+    class var className:String { get { return NSStringFromClass(self).components(separatedBy: ".").last ?? "---ERROR can't get className---" } }
 }
 
 // MARK: uimsg
 
 func appName() -> String {
-    return NSBundle.mainBundle().infoDictionary?["CFBundleName"] as? String ?? "N/A"
+    return Bundle.main.infoDictionary?["CFBundleName"] as? String ?? "N/A"
 }
 
-func UIMsg(msg:String) {
+func UIMsg(_ msg:String) {
     UIAlertController.present(title: appName(), message: msg, actionTitles: ["Ok"])
 }
 
 // MARK: hud
 
-func hudShow(view:UIView) {
-    MBProgressHUD.showHUDAddedTo(view, animated: true)
+func hudShow(_ view:UIView) {
+    MBProgressHUD.showAdded(to: view, animated: true)
 }
 
-func hudHide(view:UIView) {
-    MBProgressHUD.hideAllHUDsForView(view, animated: true)
+func hudHide(_ view:UIView) {
+    MBProgressHUD.hideAllHUDs(for: view, animated: true)
 }
 

@@ -8,5 +8,5 @@ import JSQNotificationObserverKit
 
 class NotificationsHelper {
 
-	static let badgeNotification = Notification<Any?, AnyObject>(name : "BadgeUpdateNotification")
+	static let badgeNotification = Notification(name : Notification.Name(rawValue: "BadgeUpdateNotification"))
 }

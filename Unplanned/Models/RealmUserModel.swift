@@ -18,15 +18,15 @@ class RealmUserModel: Object {
 	var groups : [String] {
 
 		set {
-			groupsString = (newValue as NSArray).componentsJoinedByString("&")
+			groupsString = (newValue as NSArray).componentsJoined(by: "&")
 		}
 
 		get {
-			return self.groupsString.componentsSeparatedByString("&")
+			return self.groupsString.components(separatedBy: "&")
 		}
 	}
 
-	func addGroup (group : String) {
+	func addGroup (_ group : String) {
 
 		var groups = self.groups
 
@@ -38,7 +38,7 @@ class RealmUserModel: Object {
 		}
 	}
 
-	func removeGroup (group : String) {
+	func removeGroup (_ group : String) {
 
 		var groups = self.groups
 

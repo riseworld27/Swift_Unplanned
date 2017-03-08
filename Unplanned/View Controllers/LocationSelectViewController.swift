@@ -13,7 +13,7 @@ import MapKit
 import RealmSwift
 
 protocol LocationSelectControllerDelegate{
-    func myVCDidFinish(text:String, description: String, coordinates : CLLocationCoordinate2D)
+    func myVCDidFinish(_ text:String, description: String, coordinates : CLLocationCoordinate2D)
 }
 
 class LocationSelectViewController: BaseViewController, CLLocationManagerDelegate, UITextFieldDelegate {
@@ -48,7 +48,7 @@ class LocationSelectViewController: BaseViewController, CLLocationManagerDelegat
     
     override func viewDidLoad() {
         //self.tableView.contentInset = UIEdgeInsets(top: -60,left: 0,bottom: 0,right: 0)
-        tfSearch.addTarget(self, action: #selector(LocationSelectViewController.textFieldDidChange(_:)), forControlEvents: UIControlEvents.EditingChanged)
+        tfSearch.addTarget(self, action: #selector(LocationSelectViewController.textFieldDidChange(_:)), for: UIControlEvents.editingChanged)
         self.tfSearch.delegate = self
         self.tfSearch.placeholder = "Search Place".localized()
        // self.hideKeyboardWhenTappedAround()
@@ -59,13 +59,13 @@ class LocationSelectViewController: BaseViewController, CLLocationManagerDelegat
         
         hudShow()
         if self.tfSearch.text?.isEmpty == false {
-            fSqClient.searchWithTerm(self.tfSearch.text!, ll: ((lastLocation?.coordinate.latitude)!, (lastLocation?.coordinate.longitude)!), offset: 0, open: .All) {
+            fSqClient.searchWithTerm(self.tfSearch.text!, ll: ((lastLocation?.coordinate.latitude)!, (lastLocation?.coordinate.longitude)!), offset: 0, open: .all) {
                 (venues) in
 
                 self.venueList = venues
                 self.filteredList = venues
 
-                dispatch_async(dispatch_get_main_queue(), {
+                DispatchQueue.main.async(execute: {
                     self.updatedData = true
                     self.locationManager?.stopUpdatingLocation()
                     self.tableView.reloadData()
@@ -73,13 +73,13 @@ class LocationSelectViewController: BaseViewController, CLLocationManagerDelegat
                 })
             }
         } else {
-            fSqClient.searchWithCategory(category, ll: ((lastLocation?.coordinate.latitude)!, (lastLocation?.coordinate.longitude)!), offset: 0, open: .All) {
+            fSqClient.searchWithCategory(category, ll: ((lastLocation?.coordinate.latitude)!, (lastLocation?.coordinate.longitude)!), offset: 0, open: .all) {
                 (venues) in
 
                 self.venueList = venues
                 self.filteredList = venues
 
-                dispatch_async(dispatch_get_main_queue(), {
+                DispatchQueue.main.async(execute: {
                     self.updatedData = true
                     self.locationManager?.stopUpdatingLocation()
                     self.tableView.reloadData()
@@ -89,21 +89,21 @@ class LocationSelectViewController: BaseViewController, CLLocationManagerDelegat
         }
     }
     
-    override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
-        super.touchesBegan(touches, withEvent: event)
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        super.touchesBegan(touches, with: event)
         self.tfSearch.resignFirstResponder()
         view.endEditing(true);
     }
     
     
-    func textFieldShouldReturn(textField: UITextField) -> Bool {
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         self.view.endEditing(true)
         return false
     }
     
-    func textFieldDidChange(textField: UITextField) {
+    func textFieldDidChange(_ textField: UITextField) {
         if !(textField.text?.isEmpty)! {
-            ivClearText.hidden = false
+            ivClearText.isHidden = false
             
 //            self.filteredList = venueList.filter({
 //                $0.name.lowercaseString.containsString(textField.text!.lowercaseString)
@@ -111,23 +111,23 @@ class LocationSelectViewController: BaseViewController, CLLocationManagerDelegat
         }
         else {
 //            self.filteredList = self.venueList
-            ivClearText.hidden = true
+            ivClearText.isHidden = true
         }
 
-        NSObject.cancelPreviousPerformRequestsWithTarget(self)
-        self.performSelector(Selector("updateData"), withObject: nil, afterDelay: 0.5)
+        NSObject.cancelPreviousPerformRequests(withTarget: self)
+        self.perform(#selector(LocationSelectViewController.updateData), with: nil, afterDelay: 0.5)
 
 //        self.tableView.reloadData()
     }
 
-    @IBAction func clearText(sender: AnyObject) {
+    @IBAction func clearText(_ sender: AnyObject) {
         self.tfSearch.text = ""
-        ivClearText.hidden = true
+        ivClearText.isHidden = true
          self.filteredList = self.venueList
         self.tableView.reloadData()
     }
     
-    func refreshVenues(location: CLLocation?, getDataFromFoursquare:Bool = false)
+    func refreshVenues(_ location: CLLocation?, getDataFromFoursquare:Bool = false)
     {
         if updatedData {
             return
@@ -148,7 +148,7 @@ class LocationSelectViewController: BaseViewController, CLLocationManagerDelegat
         }
     }
     
-    func calculateCoordinatesWithRegion(location:CLLocation) -> (CLLocationCoordinate2D, CLLocationCoordinate2D)
+    func calculateCoordinatesWithRegion(_ location:CLLocation) -> (CLLocationCoordinate2D, CLLocationCoordinate2D)
     {
         let region = MKCoordinateRegionMakeWithDistance(location.coordinate, distanceSpan, distanceSpan)
         
@@ -163,7 +163,7 @@ class LocationSelectViewController: BaseViewController, CLLocationManagerDelegat
         return (start, stop)
     }
     
-    override func viewWillAppear(animated: Bool)
+    override func viewWillAppear(_ animated: Bool)
     {
         super.viewWillAppear(animated);
         self.setupGradienNavigationBar("Create Event".localized())
@@ -171,7 +171,7 @@ class LocationSelectViewController: BaseViewController, CLLocationManagerDelegat
        
     }
     
-    override func viewDidAppear(animated: Bool)
+    override func viewDidAppear(_ animated: Bool)
     {
         if locationManager == nil
         {
@@ -185,19 +185,19 @@ class LocationSelectViewController: BaseViewController, CLLocationManagerDelegat
         }
     }
     
-    func locationManager(manager: CLLocationManager, didUpdateToLocation newLocation: CLLocation, fromLocation oldLocation: CLLocation)
+    func locationManager(_ manager: CLLocationManager, didUpdateToLocation newLocation: CLLocation, fromLocation oldLocation: CLLocation)
     {
             // When a new location update comes in, reload from Realm and from Foursquare
             refreshVenues(newLocation, getDataFromFoursquare: true);
     }
     
-    func onVenuesUpdated(notification:NSNotification)
+    func onVenuesUpdated(_ notification:Foundation.Notification)
     {
         // When new data from Foursquare comes in, reload from local Realm
         refreshVenues(nil)
     }
     
-    func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int
     {
         if (section == 0) {
             return 1;
@@ -206,7 +206,7 @@ class LocationSelectViewController: BaseViewController, CLLocationManagerDelegat
         return filteredList.count ?? 0
     }
     
-    func numberOfSectionsInTableView(tableView: UITableView) -> Int
+    func numberOfSectionsInTableView(_ tableView: UITableView) -> Int
     {
         if lastLocation == nil {
             return 0
@@ -215,15 +215,15 @@ class LocationSelectViewController: BaseViewController, CLLocationManagerDelegat
         return 2
     }
     
-    func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell
+    func tableView(_ tableView: UITableView, cellForRowAtIndexPath indexPath: IndexPath) -> UITableViewCell
     {
-        let cell = tableView.dequeueReusableCellWithIdentifier("PlacesTableViewCell") as! PlacesTableViewCell
+        let cell = tableView.dequeueReusableCell(withIdentifier: "PlacesTableViewCell") as! PlacesTableViewCell
 
         if (indexPath.section == 0) {
             cell.titleLabel?.text = "My location"
             cell.titleLabelTopConstraint.constant = 25
             cell.descriptionLabel?.text = ""
-            cell.ivIsActive.hidden = true
+            cell.ivIsActive.isHidden = true
             cell.descriptionLabel.tag = indexPath.row
         }
         else {
@@ -232,24 +232,24 @@ class LocationSelectViewController: BaseViewController, CLLocationManagerDelegat
             cell.titleLabel?.text = venue.name
             cell.titleLabelTopConstraint.constant = 0
             cell.descriptionLabel?.text = venue.placeAddress
-            cell.ivIsActive.hidden = true
+            cell.ivIsActive.isHidden = true
             cell.descriptionLabel.tag = indexPath.row
 //            cell.descriptionLabel.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(LocationSelectViewController.openMap(_:))))
         }
         return cell;
     }
     
-    func openMap(sender : UITapGestureRecognizer) {
-        let touch = sender.locationInView(tableView)
-        if let indexPath = tableView.indexPathForRowAtPoint(touch) {
+    func openMap(_ sender : UITapGestureRecognizer) {
+        let touch = sender.location(in: tableView)
+        if let indexPath = tableView.indexPathForRow(at: touch) {
             // Access the image or the cell at this index path
-            performSegueWithIdentifier("segueOpenMap", sender: indexPath.row)
+            performSegue(withIdentifier: "segueOpenMap", sender: indexPath.row)
         }
     }
     
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "segueOpenMap" {
-            let destinationVC = segue.destinationViewController as! MapViewController
+            let destinationVC = segue.destination as! MapViewController
             
             destinationVC.titleLocation = self.filteredList[sender as! Int].name
             destinationVC.addressLocation = self.filteredList[sender as! Int].placeAddress
@@ -259,13 +259,13 @@ class LocationSelectViewController: BaseViewController, CLLocationManagerDelegat
     }
 
 
-    func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+    func tableView(_ tableView: UITableView, didSelectRowAtIndexPath indexPath: IndexPath) {
 
         self.view.endEditing(true)
         tableView.reloadData()
 
-        let cell = tableView.cellForRowAtIndexPath(indexPath) as! PlacesTableViewCell
-        cell.ivIsActive.hidden = false
+        let cell = tableView.cellForRow(at: indexPath) as! PlacesTableViewCell
+        cell.ivIsActive.isHidden = false
 
         if (indexPath.section == 0) {
             self.delegate?.myVCDidFinish("My location", description: "", coordinates: lastLocation!.coordinate)
@@ -273,7 +273,7 @@ class LocationSelectViewController: BaseViewController, CLLocationManagerDelegat
             self.delegate?.myVCDidFinish((filteredList[indexPath.row].name), description: (filteredList[indexPath.row].placeAddress), coordinates: CLLocationCoordinate2D(latitude: filteredList[indexPath.row].coordinates.lat, longitude: filteredList[indexPath.row].coordinates.long))
         }
 
-        self.navigationController?.popViewControllerAnimated(true)
+        self.navigationController?.popViewController(animated: true)
 
     }
     
@@ -285,34 +285,34 @@ class LocationSelectViewController: BaseViewController, CLLocationManagerDelegat
     func createNavigationBarButtons(){
         var menuImage:UIImage = UIImage(named: "icon_close_event")!
         
-        menuImage = menuImage.imageWithRenderingMode(UIImageRenderingMode.AlwaysOriginal)
-        let menuButton: UIButton = UIButton(frame: CGRectMake(20, 20, 25, 25))
-        menuButton.setImage(menuImage, forState: .Normal)
-        menuButton.setImage(menuImage, forState: .Highlighted)
-        menuButton.addTarget(self, action: #selector(CreateEventViewController.close(_:)), forControlEvents:.TouchUpInside)
+        menuImage = menuImage.withRenderingMode(UIImageRenderingMode.alwaysOriginal)
+        let menuButton: UIButton = UIButton(frame: CGRect(x: 20, y: 20, width: 25, height: 25))
+        menuButton.setImage(menuImage, for: UIControlState())
+        menuButton.setImage(menuImage, for: .highlighted)
+        menuButton.addTarget(self, action: #selector(CreateEventViewController.close(_:)), for:.touchUpInside)
         let menuButtonBar = UIBarButtonItem.init(customView: menuButton)
         self.navigationItem.leftBarButtonItem = menuButtonBar
         
-        self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Done".localized(), style: UIBarButtonItemStyle.Plain, target: self, action: #selector(CreateEventViewController.submit(_:)))
+        self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Done".localized(), style: UIBarButtonItemStyle.plain, target: self, action: #selector(CreateEventViewController.submit(_:)))
     }
     
-    func close(sender: UIButton) {
+    func close(_ sender: UIButton) {
         self.setTransparentNavigationBar()
-        self.navigationController?.popViewControllerAnimated(true)
+        self.navigationController?.popViewController(animated: true)
     }
     
-    func submit(sender : UIButton) {
+    func submit(_ sender : UIButton) {
         self.setTransparentNavigationBar()
-        self.navigationController?.popViewControllerAnimated(true)
+        self.navigationController?.popViewController(animated: true)
     }
 }
 
-extension RangeReplaceableCollectionType where Generator.Element : Equatable {
+extension RangeReplaceableCollection where Iterator.Element : Equatable {
     
     // Remove first collection element that is equal to the given `object`:
-    mutating func removeObject(object : Generator.Element) {
-        if let index = self.indexOf(object) {
-            self.removeAtIndex(index)
+    mutating func removeObject(_ object : Iterator.Element) {
+        if let index = self.index(of: object) {
+            self.remove(at: index)
         }
     }
 }

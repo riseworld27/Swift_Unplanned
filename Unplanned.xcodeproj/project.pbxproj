@@ -383,6 +383,7 @@
 					64884C0A1CF6457C008CB2B9 = {
 						CreatedOnToolsVersion = 7.3;
 						DevelopmentTeam = 266XY88VNC;
+						LastSwiftMigration = 0810;
 					};
 				};
 			};
@@ -689,6 +690,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.ububble.Unplanned;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
+				SWIFT_VERSION = 3.0;
 			};
 			name = Debug;
 		};
@@ -704,6 +706,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.ububble.Unplanned;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "176f75e9-a28c-44cf-b0ca-44beff9bb171";
+				SWIFT_VERSION = 3.0;
 			};
 			name = Release;
 		};

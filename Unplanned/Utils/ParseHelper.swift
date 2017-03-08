@@ -9,14 +9,14 @@
 import Foundation
 import Parse
 
-func clearRelation(user: PFUser, relationName: String) {
-    let relation = user.relationForKey(relationName)
+func clearRelation(_ user: PFUser, relationName: String) {
+    let relation = user.relation(forKey: relationName)
     let query = relation.query()
     
-    query.findObjectsInBackgroundWithBlock({(objects, error) -> Void in
+    query.findObjectsInBackground(block: {(objects, error) -> Void in
         if error == nil {
             for item in objects! {
-                relation.removeObject(item )
+                relation.remove(item )
             }
             
             user.saveInBackground()
@@ -24,8 +24,8 @@ func clearRelation(user: PFUser, relationName: String) {
     })
 }
 
-func registerPFUserForPushNotifications(user:PFUser){
-    let installation = PFInstallation.currentInstallation()
+func registerPFUserForPushNotifications(_ user:PFUser){
+    let installation = PFInstallation.current()
     installation["user"] = user
     installation["username"] = user.username
     installation.saveInBackground()
@@ -33,23 +33,23 @@ func registerPFUserForPushNotifications(user:PFUser){
 }
 
 func updateBadges() {
-    let installation = PFInstallation.currentInstallation()
+    let installation = PFInstallation.current()
     installation["badge"] = 0
     installation.badge = 0
     installation.saveInBackground()
 }
 
-func subscribeUserToPushNotificationChannel(channelName:String){
-    let currentInstallation = PFInstallation.currentInstallation()
-    currentInstallation.removeObject(channelName, forKey: "channels")
+func subscribeUserToPushNotificationChannel(_ channelName:String){
+    let currentInstallation = PFInstallation.current()
+    currentInstallation.remove(channelName, forKey: "channels")
     currentInstallation.saveInBackground()
 }
 
-func sendPushNotificationToUser(recipientId:String, title:String, message:String, pushType:String){
+func sendPushNotificationToUser(_ recipientId:String, title:String, message:String, pushType:String){
     
     let data = [ "alert": ["title" : title, "body" : message],
                  "badge" : "Increment",
-                 "title" : title]
+                 "title" : title] as [String : Any]
     
     let query: PFQuery = PFInstallation.query()!
     
@@ -58,8 +58,8 @@ func sendPushNotificationToUser(recipientId:String, title:String, message:String
     
     let push: PFPush = PFPush()
     push.setQuery(query)
-    push.setData(data as [NSObject : AnyObject])
-    push.sendPushInBackgroundWithBlock { (done: Bool, error: NSError?) in
+    push.setData(data as [AnyHashable: Any])
+    push.sendInBackground { (done: Bool, error: NSError?) in
         if error == nil {
             print ("sent to \(recipientId)")
         }
@@ -78,14 +78,14 @@ func sendPushNotificationToUser(recipientId:String, title:String, message:String
     
 }
 
-func sendPushNotificationToChannel(channelName:String, message:String){
+func sendPushNotificationToChannel(_ channelName:String, message:String){
     let push = PFPush()
     push.setChannel(channelName)
     push.setMessage(message)
-    push.sendPushInBackground()
+    push.sendInBackground()
 }
 
-func getPFUser(username:String, completion:(foundUser:PFUser) -> Void){
+func getPFUser(_ username:String, completion:@escaping (_ foundUser:PFUser) -> Void){
     let usernameQuery = PFQuery(className: "_User")
     usernameQuery.whereKey("username", equalTo: username)
     
@@ -94,14 +94,14 @@ func getPFUser(username:String, completion:(foundUser:PFUser) -> Void){
     
     var foundPFUser:PFUser?
     
-    let query = PFQuery.orQueryWithSubqueries([fbNameQuery, usernameQuery])
-    query.findObjectsInBackgroundWithBlock({(object, error) -> Void in
+    let query = PFQuery.orQuery(withSubqueries: [fbNameQuery, usernameQuery])
+    query.findObjectsInBackground(block: {(object, error) -> Void in
         if error == nil && object?.count == 1{
             for item in object! {
                 foundPFUser = item as? PFUser
             }
         }
-        completion(foundUser: foundPFUser!)
+        completion(foundPFUser!)
     })
     
 }

@@ -26,19 +26,19 @@ class EventLocationViewController: BaseViewController {
     override func viewDidLoad() {
         btnSelectPlace.layer.cornerRadius = 20
         btnSelectPlace.layer.borderWidth = 2
-        btnSelectPlace.layer.borderColor = UIColor(rgba: "#00BEE0").CGColor
+        btnSelectPlace.layer.borderColor = UIColor(rgba: "#00BEE0").cgColor
         
         viewSelectedLocation.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(EventLocationViewController.selectLocationPressed(_:))))
         
-        btnSelectPlace.setTitle("Choose a place".localized(), forState: .Normal)
+        btnSelectPlace.setTitle("Choose a place".localized(), for: UIControlState())
     }
-    @IBAction func selectLocationPressed(sender: AnyObject) {
-        self.performSegueWithIdentifier("segueSelectLocation", sender: nil)
+    @IBAction func selectLocationPressed(_ sender: AnyObject) {
+        self.performSegue(withIdentifier: "segueSelectLocation", sender: nil)
     }
     
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject!) {
+    override func prepare(for segue: UIStoryboardSegue, sender: Any!) {
         if segue.identifier == "segueSelectLocation"{
-            let vc = segue.destinationViewController as! LocationSelectViewController
+            let vc = segue.destination as! LocationSelectViewController
             //vc.colorString = colorLabel.text
             vc.delegate = self
             vc.category = self.foursquareId
@@ -47,12 +47,12 @@ class EventLocationViewController: BaseViewController {
 }
 
 extension EventLocationViewController : LocationSelectControllerDelegate {
-    func myVCDidFinish(text: String, description : String, coordinates : CLLocationCoordinate2D) {
-        self.viewSelectedLocation.hidden = false
+    func myVCDidFinish(_ text: String, description : String, coordinates : CLLocationCoordinate2D) {
+        self.viewSelectedLocation.isHidden = false
         self.labelTitleLocation.text = text
         self.labelDescriptionLocation.text = description
-        ivLocation.hidden = true
-        btnSelectPlace.hidden = true
+        ivLocation.isHidden = true
+        btnSelectPlace.isHidden = true
         self.currentCoordinates = coordinates
     }
 }
