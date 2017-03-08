@@ -12,6 +12,6 @@ import UIKit
 class SolidButton : UIButton {
     override func awakeFromNib() {
         super.awakeFromNib()
-        backgroundColor = UIColor.lightGrayColor().colorWithAlphaComponent(0.5)
+        backgroundColor = UIColor.lightGray.withAlphaComponent(0.5)
     }
 }

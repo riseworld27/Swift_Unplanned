@@ -28,10 +28,10 @@ class ListContactsInGroupViewController: BaseViewController, UITableViewDelegate
     }
     
     
-    @IBAction func clearTextPressed(sender: AnyObject) {
+    @IBAction func clearTextPressed(_ sender: AnyObject) {
     }
     
-    override func viewWillAppear(animated: Bool) {
+    override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
         self.setupGradienNavigationBar(selectedGroup.titleGroup)
@@ -42,7 +42,7 @@ class ListContactsInGroupViewController: BaseViewController, UITableViewDelegate
         self.loadFriends()
     }
     
-    func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
 
         if (section == 0) {
             return 1
@@ -53,8 +53,8 @@ class ListContactsInGroupViewController: BaseViewController, UITableViewDelegate
 
 
     
-    func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCellWithIdentifier("ContactsListTableViewCell") as! ContactsTableViewCell
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: "ContactsListTableViewCell") as! ContactsTableViewCell
         
         if indexPath.section == 0 {
             cell.ivUserPicture.image = UIImage(named: "icon_add_contact_big")
@@ -64,14 +64,14 @@ class ListContactsInGroupViewController: BaseViewController, UITableViewDelegate
         else {
             
             if self.friendsList.contains(listOfContacts[indexPath.row].username) {
-                cell.ivInApp.hidden = false
+                cell.ivInApp.isHidden = false
             } else {
-                cell.ivInApp.hidden = true
+                cell.ivInApp.isHidden = true
             }
             
             let currentContact = self.listOfContacts[indexPath.row]
             if (currentContact.photoUrl.characters.count > 0) {
-                cell.ivUserPicture.kf_setImageWithURL(NSURL(string: currentContact.photoUrl)!)
+                cell.ivUserPicture.kf_setImageWithURL(URL(string: currentContact.photoUrl)!)
             } else {
                 cell.ivUserPicture.image = UIImage(named: "icon_no_user")
             }
@@ -81,68 +81,68 @@ class ListContactsInGroupViewController: BaseViewController, UITableViewDelegate
         return cell
     }
     
-    func numberOfSectionsInTableView(tableView: UITableView) -> Int {
+    func numberOfSections(in tableView: UITableView) -> Int {
         return 2
     }
    
     
-    func tableView(tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         return "\(self.listOfContacts.count) \("members".localized())"
     }
     
-    func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         if indexPath.section == 0 {
-            self.performSegueWithIdentifier("segueEditContactsInGroup", sender: nil)
+            self.performSegue(withIdentifier: "segueEditContactsInGroup", sender: nil)
         }
     }
     
     func createNavigationBarButtons(){
         var menuImage:UIImage = UIImage(named: "icon_back_button")!
         
-        menuImage = menuImage.imageWithRenderingMode(UIImageRenderingMode.AlwaysOriginal)
-        let menuButton: UIButton = UIButton(frame: CGRectMake(5, 5, 20, 20))
-        menuButton.setImage(menuImage, forState: .Normal)
-        menuButton.setImage(menuImage, forState: .Highlighted)
-        menuButton.addTarget(self, action: #selector(CreateEventViewController.close(_:)), forControlEvents:.TouchUpInside)
+        menuImage = menuImage.withRenderingMode(UIImageRenderingMode.alwaysOriginal)
+        let menuButton: UIButton = UIButton(frame: CGRect(x: 5, y: 5, width: 20, height: 20))
+        menuButton.setImage(menuImage, for: UIControlState())
+        menuButton.setImage(menuImage, for: .highlighted)
+        menuButton.addTarget(self, action: #selector(CreateEventViewController.close(_:)), for:.touchUpInside)
         let menuButtonBar = UIBarButtonItem.init(customView: menuButton)
         self.navigationItem.leftBarButtonItem = menuButtonBar
         
         
         var editImage:UIImage = UIImage(named: "icon_edit_contacts")!
         
-        editImage = editImage.imageWithRenderingMode(UIImageRenderingMode.AlwaysOriginal)
-        let editButton: UIButton = UIButton(frame: CGRectMake(5, 5, 20, 20))
-        editButton.setImage(editImage, forState: .Normal)
-        editButton.setImage(editImage, forState: .Highlighted)
-        editButton.addTarget(self, action: #selector(CreateEventViewController.submit(_:)), forControlEvents:.TouchUpInside)
+        editImage = editImage.withRenderingMode(UIImageRenderingMode.alwaysOriginal)
+        let editButton: UIButton = UIButton(frame: CGRect(x: 5, y: 5, width: 20, height: 20))
+        editButton.setImage(editImage, for: UIControlState())
+        editButton.setImage(editImage, for: .highlighted)
+        editButton.addTarget(self, action: #selector(CreateEventViewController.submit(_:)), for:.touchUpInside)
         let editButtonBar = UIBarButtonItem.init(customView: editButton)
         self.navigationItem.rightBarButtonItem = editButtonBar
         
     }
     
-    func close(sender: UIButton) {
-        self.navigationController?.popViewControllerAnimated(true)
+    func close(_ sender: UIButton) {
+        self.navigationController?.popViewController(animated: true)
     }
     
-    func submit(sender : UIButton) {
-        self.performSegueWithIdentifier("segueEditContactsInGroup", sender: nil)
+    func submit(_ sender : UIButton) {
+        self.performSegue(withIdentifier: "segueEditContactsInGroup", sender: nil)
     }
     
-    func tableView(tableView: UITableView, willDisplayHeaderView view: UIView, forSection section: Int)
+    func tableView(_ tableView: UITableView, willDisplayHeaderView view: UIView, forSection section: Int)
     {
         let header = view as! UITableViewHeaderFooterView
-        header.textLabel?.font = UIFont.systemFontOfSize(14.0)
-        header.textLabel?.textColor = UIColor.grayColor()
+        header.textLabel?.font = UIFont.systemFont(ofSize: 14.0)
+        header.textLabel?.textColor = UIColor.gray
         header.backgroundView?.backgroundColor = UIColor(rgba: "#F7F7F7")
     }
     
-    func tableView(tableView: UITableView, canEditRowAtIndexPath indexPath: NSIndexPath) -> Bool {
+    func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
         return indexPath.section != 0
     }
     
-    func tableView(tableView: UITableView, editActionsForRowAtIndexPath indexPath: NSIndexPath) -> [UITableViewRowAction]? {
+    func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]? {
         
-        let delete = UITableViewRowAction(style: .Normal, title: "Delete".localized()) { action, index in
+        let delete = UITableViewRowAction(style: .normal, title: "Delete".localized()) { action, index in
             
             let row = indexPath.row
             
@@ -153,11 +153,11 @@ class ListContactsInGroupViewController: BaseViewController, UITableViewDelegate
                 let query = PFQuery(className: "Group_users")
                 query.whereKey("objectId", equalTo: user.objectId)
 
-                query.findObjectsInBackgroundWithBlock { (objects : [PFObject]?, error: NSError?) -> Void in
+                query.findObjectsInBackground { (objects : [PFObject]?, error: NSError?) -> Void in
 
                     if let objs = objects {
                         for object in objs {
-                            object.deleteInBackgroundWithBlock({ (value: Bool, error : NSError?) in
+                            object.deleteInBackground(block: { (value: Bool, error : NSError?) in
                                 if value == false {
 
                                     self.getContacstsInGroup()
@@ -177,7 +177,7 @@ class ListContactsInGroupViewController: BaseViewController, UITableViewDelegate
             }
             
         }
-        delete.backgroundColor = UIColor.redColor()
+        delete.backgroundColor = UIColor.red
         
         
         return [delete]
@@ -187,11 +187,11 @@ class ListContactsInGroupViewController: BaseViewController, UITableViewDelegate
         
         self.friendsList.removeAll()
 
-        let user = PFUser.currentUser()
+        let user = PFUser.current()
 
-        user?.fetchInBackgroundWithBlock({ (object: PFObject?, error: NSError?) in
+        user?.fetchInBackground(block: { (object: PFObject?, error: NSError?) in
             if error == nil {
-                self.friendsList = (user?.objectForKey("allFriends") as? [String]) ?? []
+                self.friendsList = (user?.object(forKey: "allFriends") as? [String]) ?? []
                 self.tableView.reloadData()
             }
         })
@@ -199,9 +199,9 @@ class ListContactsInGroupViewController: BaseViewController, UITableViewDelegate
         
     }
     
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "segueEditContactsInGroup" {
-            let destinationVC = segue.destinationViewController as! AddContactsToGroupViewController
+            let destinationVC = segue.destination as! AddContactsToGroupViewController
             destinationVC.selectedGroup = self.selectedGroup
         }
     }
@@ -210,20 +210,20 @@ class ListContactsInGroupViewController: BaseViewController, UITableViewDelegate
 
         let queryGetEvents = PFQuery(className: "Group_users")
         queryGetEvents.whereKey("group_id", equalTo: selectedGroup.idGroup)
-        queryGetEvents.orderByAscending("full_name")
+        queryGetEvents.order(byAscending: "full_name")
         
-        queryGetEvents.findObjectsInBackgroundWithBlock { (objects : [PFObject]?, error: NSError?) in
+        queryGetEvents.findObjectsInBackground { (objects : [PFObject]?, error: NSError?) in
             if error == nil {
 
                 for object : PFObject in objects! {
                     
                     var imageUrl = ""
                     
-                    if let photo = object.objectForKey("photo") as? PFFile {
+                    if let photo = object.object(forKey: "photo") as? PFFile {
                         imageUrl = photo.url!
                     }
                     
-                    var user = RealmUserModel(_objectId: object.objectId!, _userName: object.valueForKey("username") as! String, _name: object.valueForKey("full_name") as! String, _imageUrl: imageUrl, _isAdded: object.valueForKey("in_app") as! Bool)
+                    var user = RealmUserModel(_objectId: object.objectId!, _userName: object.value(forKey: "username") as! String, _name: object.value(forKey: "full_name") as! String, _imageUrl: imageUrl, _isAdded: object.value(forKey: "in_app") as! Bool)
 
                     user.addGroup(self.selectedGroup.idGroup)
 

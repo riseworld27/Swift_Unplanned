@@ -18,24 +18,24 @@ public let QuadratResponseErrorDetailKey = "errorDetail"
     Read `Responses & Errors`:
     https://developer.foursquare.com/overview/responses
 */
-public class Result: CustomStringConvertible {
+open class Result: CustomStringConvertible {
     
     /** 
         HTTP response status code.
     */
-    public var HTTPSTatusCode   : Int?
+    open var HTTPSTatusCode   : Int?
     
     /** 
         HTTP response headers.
         Can contain `RateLimit-Remaining` and `X-RateLimit-Limit`.
         Read about `Rate Limits` <https://developer.foursquare.com/overview/ratelimits>.
     */
-    public var HTTPHeaders      : [NSObject:AnyObject]?
+    open var HTTPHeaders      : [AnyHashable: Any]?
     
     /** 
         The URL which has been requested. 
     */
-    public var URL              : NSURL?
+    open var URL              : Foundation.URL?
     
     
     /*
@@ -44,31 +44,31 @@ public class Result: CustomStringConvertible {
             NSURLErrorDomain            - in case of some networking problem.
             NSCocoaErrorDomain          - in case of error during JSON parsing.
     */
-    public var error            : NSError?
+    open var error            : NSError?
     
     /** 
         A response. Extracted from JSON `response` field.
         Can be empty in case of error or `multi` request. 
         If you are doung `multi` request use `subresponses` property
     */
-    public var response         : [String:AnyObject]?
+    open var response         : [String:AnyObject]?
     
     /** 
         Responses returned from `multi` endpoint. Subresponses never have HTTP headers and status code.
         Extracted from JSON `responses` field.
     */
-    public var results          : [Result]?
+    open var results          : [Result]?
     
     /** 
         A notifications. Extracted from JSON `notifications` field.
     */
-    public var notifications    : [[String:AnyObject]]?
+    open var notifications    : [[String:AnyObject]]?
     
     init() {
         
     }
     
-    public var description: String {
+    open var description: String {
         return "Status code: \(HTTPSTatusCode)\nResponse: \(response)\nError: \(error)"
     }
     
@@ -78,12 +78,12 @@ public class Result: CustomStringConvertible {
 /** Response creation from HTTP response. */
 extension Result {
     
-    class func createResult(HTTPResponse: NSHTTPURLResponse?, JSON: [String:AnyObject]?, error: NSError? ) -> Result {
+    class func createResult(_ HTTPResponse: HTTPURLResponse?, JSON: [String:AnyObject]?, error: NSError? ) -> Result {
         let result = Result()
         if HTTPResponse != nil {
             result.HTTPHeaders     = HTTPResponse!.allHeaderFields
             result.HTTPSTatusCode  = HTTPResponse!.statusCode
-            result.URL             = HTTPResponse!.URL
+            result.URL             = HTTPResponse!.url
         }
         
         if JSON != nil {
@@ -116,15 +116,15 @@ extension Result {
         return result
     }
     
-    class func resultFromURLSessionResponse(response:NSURLResponse?, data: NSData?, error: NSError?) -> Result {
-        let HTTPResponse = response as? NSHTTPURLResponse
+    class func resultFromURLSessionResponse(_ response:URLResponse?, data: Data?, error: NSError?) -> Result {
+        let HTTPResponse = response as? HTTPURLResponse
         var JSONResult: [String: AnyObject]?
         var JSONError = error
         
-        if data != nil && JSONError == nil && HTTPResponse?.MIMEType == "application/json" {
+        if data != nil && JSONError == nil && HTTPResponse?.mimeType == "application/json" {
             do {
-                JSONResult = try NSJSONSerialization.JSONObjectWithData(data!,
-                                options: NSJSONReadingOptions(rawValue: 0)) as? [String: AnyObject]
+                JSONResult = try JSONSerialization.jsonObject(with: data!,
+                                options: JSONSerialization.ReadingOptions(rawValue: 0)) as? [String: AnyObject]
             } catch let error as NSError {
                 JSONError = error
             }

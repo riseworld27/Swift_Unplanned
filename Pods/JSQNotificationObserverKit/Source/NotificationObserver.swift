@@ -20,7 +20,7 @@ import Foundation
 
 
 /// Describes a notification's userInfo dictionary.
-public typealias UserInfo = [NSObject : AnyObject]
+public typealias UserInfo = [AnyHashable: Any]
 
 /// Describes a Cocoa notification.
 public typealias CocoaNotification = Notification<Any, AnyObject>
@@ -48,7 +48,7 @@ public func ==(lhs: UserInfo, rhs: UserInfo) -> Bool {
             return false
         }
 
-        if !rhsValue.isEqual(value) {
+        if !(rhsValue as AnyObject).isEqual(value) {
             return false
         }
     }
@@ -93,8 +93,8 @@ public struct Notification <Value, Sender: AnyObject> {
      - parameter center: The notification center from which the notification should be dispatched.
      The default is `NSNotificationCenter.defaultCenter()`.
      */
-    public func post(value: Value, center: NSNotificationCenter = .defaultCenter()) {
-        center.postNotificationName(name, object: sender, userInfo: userInfo(value))
+    public func post(_ value: Value, center: NotificationCenter = .default) {
+        center.post(name: Foundation.Notification.Name(rawValue: name), object: sender, userInfo: userInfo(value))
     }
 
     /**
@@ -106,7 +106,7 @@ public struct Notification <Value, Sender: AnyObject> {
 
      - returns: A new `Notification` instance.
      */
-    public func withSender(sender: Sender?) -> Notification {
+    public func withSender(_ sender: Sender?) -> Notification {
         return Notification(name: name, sender: sender)
     }
 }
@@ -128,20 +128,20 @@ public final class NotificationObserver <V, S: AnyObject> {
      - parameter value:  The data sent with the notification.
      - parameter sender: The object that sent the notification, or `nil` if the notification is not associated with a specific sender.
      */
-    public typealias ValueSenderClosure = (value: V, sender: S?) -> Void
+    public typealias ValueSenderClosure = (_ value: V, _ sender: S?) -> Void
 
     /**
      The closure to be called when an `NSNotification` is received.
 
      - parameter notification: The notification received.
      */
-    public typealias NotificationClosure = (notification: NSNotification) -> Void
+    public typealias NotificationClosure = (_ notification: Foundation.Notification) -> Void
 
 
     // MARK: Properties
 
-    private let observerProxy: NSObjectProtocol
-    private let center: NSNotificationCenter
+    fileprivate let observerProxy: NSObjectProtocol
+    fileprivate let center: NotificationCenter
 
 
     // MARK: Initialization
@@ -159,12 +159,12 @@ public final class NotificationObserver <V, S: AnyObject> {
      - returns: A new `NotificationObserver` instance.
      */
     public convenience init(_ notification: Notification<V, S>,
-                              queue: NSOperationQueue? = nil,
-                              center: NSNotificationCenter = .defaultCenter(),
-                              handler: ValueSenderClosure) {
-        self.init(notification, queue: queue, center: center, handler: { (notification: NSNotification) in
+                              queue: OperationQueue? = nil,
+                              center: NotificationCenter = .default,
+                              handler: @escaping ValueSenderClosure) {
+        self.init(notification, queue: queue, center: center, handler: { (notification: Foundation.Notification) in
             if let value: V = unboxUserInfo(notification.userInfo) {
-                handler(value: value, sender: notification.object as? S)
+                handler(value, notification.object as? S)
             }
         })
     }
@@ -182,11 +182,11 @@ public final class NotificationObserver <V, S: AnyObject> {
      - returns: A new `NotificationObserver` instance.
      */
     public init(_ notification: Notification<V, S>,
-                  queue: NSOperationQueue? = nil,
-                  center: NSNotificationCenter = .defaultCenter(),
-                  handler: NotificationClosure) {
+                  queue: OperationQueue? = nil,
+                  center: NotificationCenter = .default,
+                  handler: @escaping NotificationClosure) {
         self.center = center
-        observerProxy = center.addObserverForName(notification.name, object: notification.sender, queue: queue, usingBlock: handler)
+        observerProxy = center.addObserver(forName: NSNotification.Name(rawValue: notification.name), object: notification.sender, queue: queue, using: handler)
     }
 
     /// :nodoc:
@@ -214,13 +214,13 @@ private final class Box<T> {
 
 
 // Create user info dictionary
-private func userInfo<T>(value: T) -> [String : Box<T>] {
+private func userInfo<T>(_ value: T) -> [String : Box<T>] {
     return [UserInfoValueKey : Box(value)]
 }
 
 
 // Unbox user info dictionary
-private func unboxUserInfo<T>(userInfo: UserInfo?) -> T? {
+private func unboxUserInfo<T>(_ userInfo: UserInfo?) -> T? {
     if let box = userInfo?[UserInfoValueKey] as? Box<T> {
         return box.value
     }

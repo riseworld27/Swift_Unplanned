@@ -25,8 +25,8 @@
 import Foundation
 
 
-internal extension NSCalendarUnit {
-    private var cfValue: CFCalendarUnit {
+internal extension NSCalendar.Unit {
+    fileprivate var cfValue: CFCalendarUnit {
         #if os(OSX) || os(iOS)
             return CFCalendarUnit(rawValue: self.rawValue)
         #else
@@ -37,15 +37,15 @@ internal extension NSCalendarUnit {
 
 //MARK: - Extension: NSCalendar -
 
-public extension NSCalendar {
+public extension Calendar {
 
     // The code below is part of the Swift.org code. It is included as rangeOfUnit is a very useful
     // function for the startOf and endOf functions.
     // As always we would prefer using Foundation code rather than inventing code ourselves.
-    typealias CFType = CFCalendarRef
+    typealias CFType = CFCalendar
 
-    private var cfObject: CFType {
-        return unsafeBitCast(self, CFCalendarRef.self)
+    fileprivate var cfObject: CFType {
+        return unsafeBitCast(self, to: CFCalendar.self)
     }
 
 
@@ -67,7 +67,7 @@ public extension NSCalendar {
     /// - Note: Since this API is under consideration it may be either removed or revised in the
     ///     near future
     ///
-    public func rangeOfUnit(unit: NSCalendarUnit, forDate date: NSDate) -> NSDateInterval? {
+    public func rangeOfUnit(_ unit: NSCalendar.Unit, forDate date: Date) -> NSDateInterval? {
         var start: CFAbsoluteTime = 0.0
         var ti: CFTimeInterval = 0.0
         let res: Bool = withUnsafeMutablePointers(&start, &ti) {
@@ -75,16 +75,16 @@ public extension NSCalendar {
                 tip: UnsafeMutablePointer<CFTimeInterval>) -> Bool in
 
             let startPtr: UnsafeMutablePointer<CFAbsoluteTime> =
-                unsafeBitCast(startp, UnsafeMutablePointer<CFAbsoluteTime>.self)
+                unsafeBitCast(startp, to: UnsafeMutablePointer<CFAbsoluteTime>.self)
             let tiPtr: UnsafeMutablePointer<CFTimeInterval> =
-                unsafeBitCast(tip, UnsafeMutablePointer<CFTimeInterval>.self)
+                unsafeBitCast(tip, to: UnsafeMutablePointer<CFTimeInterval>.self)
             return CFCalendarGetTimeRangeOfUnit(cfObject, unit.cfValue,
                 date.timeIntervalSinceReferenceDate, startPtr, tiPtr)
         }
 
         if res {
-            return NSDateInterval(start: NSDate(timeIntervalSinceReferenceDate: start),
-                interval: ti)
+            return NSDateInterval(start: Date(timeIntervalSinceReferenceDate: start),
+                end: ti)
         }
         return nil
     }
@@ -98,7 +98,7 @@ public extension NSCalendar {
 
      - returns: instance of the new NSCalendar
      */
-    public static func fromType(type: CalendarName) -> NSCalendar! {
+    public static func fromType(_ type: CalendarName) -> Calendar! {
         return type.calendar
     }
 
@@ -111,10 +111,10 @@ public extension NSCalendar {
 
      - returns: a new NSCalendar instance from system settings
      */
-    @available(*, deprecated=2.0.3,
-    message="locale was deprecated, use currentCalendar() or autoupdatingCurrentCalendar() ")
-    static func locale(autoUpdate: Bool) -> NSCalendar! {
-        return NSCalendar.fromType(CalendarName.Local(autoUpdate))
+    @available(*, deprecated: 2.0.3,
+    message: "locale was deprecated, use currentCalendar() or autoupdatingCurrentCalendar() ")
+    static func locale(_ autoUpdate: Bool) -> Calendar! {
+        return Calendar.fromType(CalendarName.local(autoUpdate))
     }
 }
 
@@ -126,43 +126,43 @@ public extension NSCalendar {
 */
 public enum CalendarName {
 
-    @available(*, deprecated=2.0.3,
-    message="Local was deprecated, use Current or AutoUpdatingCurrent")
-    case Local(_: Bool)
-    case Current
-    case AutoUpdatingCurrent
-    case Gregorian, Buddhist, Chinese, Coptic, EthiopicAmeteMihret, EthiopicAmeteAlem, Hebrew,
-    ISO8601, Indian, Islamic, IslamicCivil, Japanese, Persian, RepublicOfChina, IslamicTabular,
-    IslamicUmmAlQura
+    @available(*, deprecated: 2.0.3,
+    message: "Local was deprecated, use Current or AutoUpdatingCurrent")
+    case local(_: Bool)
+    case current
+    case autoUpdatingCurrent
+    case gregorian, buddhist, chinese, coptic, ethiopicAmeteMihret, ethiopicAmeteAlem, hebrew,
+    iso8601, indian, islamic, islamicCivil, japanese, persian, republicOfChina, islamicTabular,
+    islamicUmmAlQura
 
-    public var calendar: NSCalendar {
+    public var calendar: Calendar {
         var identifier: String
         switch self {
-        case .Current:				return NSCalendar.currentCalendar()
-        case .AutoUpdatingCurrent:	return NSCalendar.autoupdatingCurrentCalendar()
-        case .Gregorian:			identifier = NSCalendarIdentifierGregorian
-        case .Buddhist:				identifier = NSCalendarIdentifierBuddhist
-        case .Chinese:				identifier = NSCalendarIdentifierChinese
-        case .Coptic:				identifier = NSCalendarIdentifierCoptic
-        case .EthiopicAmeteMihret:	identifier = NSCalendarIdentifierEthiopicAmeteMihret
-        case .EthiopicAmeteAlem:	identifier = NSCalendarIdentifierEthiopicAmeteAlem
-        case .Hebrew:				identifier = NSCalendarIdentifierHebrew
-        case .ISO8601:				identifier = NSCalendarIdentifierISO8601
-        case .Indian:				identifier = NSCalendarIdentifierIndian
-        case .Islamic:				identifier = NSCalendarIdentifierIslamic
-        case .IslamicCivil:			identifier = NSCalendarIdentifierIslamicCivil
-        case .Japanese:				identifier = NSCalendarIdentifierJapanese
-        case .Persian:				identifier = NSCalendarIdentifierPersian
-        case .RepublicOfChina:		identifier = NSCalendarIdentifierRepublicOfChina
-        case .IslamicTabular:		identifier = NSCalendarIdentifierIslamicTabular
-        case .IslamicUmmAlQura:		identifier = NSCalendarIdentifierIslamicUmmAlQura
-        case .Local(let autoUpdate):
+        case .current:				return Calendar.current
+        case .autoUpdatingCurrent:	return Calendar.autoupdatingCurrent
+        case .gregorian:			identifier = Calendar.Identifier.gregorian
+        case .buddhist:				identifier = Calendar.Identifier.buddhist
+        case .chinese:				identifier = Calendar.Identifier.chinese
+        case .coptic:				identifier = Calendar.Identifier.coptic
+        case .ethiopicAmeteMihret:	identifier = Calendar.Identifier.ethiopicAmeteMihret
+        case .ethiopicAmeteAlem:	identifier = Calendar.Identifier.ethiopicAmeteAlem
+        case .hebrew:				identifier = Calendar.Identifier.hebrew
+        case .iso8601:				identifier = Calendar.Identifier.iso8601
+        case .indian:				identifier = Calendar.Identifier.indian
+        case .islamic:				identifier = Calendar.Identifier.islamic
+        case .islamicCivil:			identifier = Calendar.Identifier.islamicCivil
+        case .japanese:				identifier = Calendar.Identifier.japanese
+        case .persian:				identifier = Calendar.Identifier.persian
+        case .republicOfChina:		identifier = Calendar.Identifier.republicOfChina
+        case .islamicTabular:		identifier = Calendar.Identifier.islamicTabular
+        case .islamicUmmAlQura:		identifier = Calendar.Identifier.islamicUmmAlQura
+        case .local(let autoUpdate):
             if autoUpdate {
-                return NSCalendar.autoupdatingCurrentCalendar()
+                return Calendar.autoupdatingCurrent
             } else {
-                return NSCalendar.currentCalendar()
+                return Calendar.current
             }
         }
-        return NSCalendar(identifier: identifier)!
+        return Calendar(identifier: identifier)!
     }
 }

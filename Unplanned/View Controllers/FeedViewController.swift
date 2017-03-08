@@ -29,18 +29,18 @@ class FeedViewController: BaseViewController, UITableViewDataSource, UITableView
         
         var menuImage:UIImage = UIImage(named: "icon_menu")!
         
-        menuImage = menuImage.imageWithRenderingMode(UIImageRenderingMode.AlwaysOriginal)
-        let menuButton: UIButton = UIButton(frame: CGRectMake(20, 20, 25, 25))
-        menuButton.setImage(menuImage, forState: .Normal)
-        menuButton.setImage(menuImage, forState: .Highlighted)
-        menuButton.addTarget(self, action: #selector(FeedViewController.menu(_:)), forControlEvents:.TouchUpInside)
+        menuImage = menuImage.withRenderingMode(UIImageRenderingMode.alwaysOriginal)
+        let menuButton: UIButton = UIButton(frame: CGRect(x: 20, y: 20, width: 25, height: 25))
+        menuButton.setImage(menuImage, for: UIControlState())
+        menuButton.setImage(menuImage, for: .highlighted)
+        menuButton.addTarget(self, action: #selector(FeedViewController.menu(_:)), for:.touchUpInside)
 
-        let badge: DBBadgeLabel = DBBadgeLabel(cornerRadius: 9, textColor: UIColor.whiteColor(), backgroundColor: UIColor(hex6:0x672890))
-        badge.text = "\(UIApplication.sharedApplication().applicationIconBadgeNumber)"
-        badge.font = UIFont.systemFontOfSize(9)
-        badge.textAlignment = NSTextAlignment.Center
-        badge.frame = CGRectMake(25, -3, 18, 18)
-        badge.hidden = UIApplication.sharedApplication().applicationIconBadgeNumber == 0
+        let badge: DBBadgeLabel = DBBadgeLabel(cornerRadius: 9, textColor: UIColor.white, backgroundColor: UIColor(hex6:0x672890))
+        badge.text = "\(UIApplication.shared.applicationIconBadgeNumber)"
+        badge.font = UIFont.systemFont(ofSize: 9)
+        badge.textAlignment = NSTextAlignment.center
+        badge.frame = CGRect(x: 25, y: -3, width: 18, height: 18)
+        badge.isHidden = UIApplication.shared.applicationIconBadgeNumber == 0
         menuButton.addSubview(badge)
 
         let menuButtonBar = UIBarButtonItem.init(customView: menuButton)
@@ -52,26 +52,26 @@ class FeedViewController: BaseViewController, UITableViewDataSource, UITableView
 
             (value, sender) in
 
-            badge.hidden = UIApplication.sharedApplication().applicationIconBadgeNumber == 0
-            badge.text = "\(UIApplication.sharedApplication().applicationIconBadgeNumber)"
+            badge.isHidden = UIApplication.shared.applicationIconBadgeNumber == 0
+            badge.text = "\(UIApplication.shared.applicationIconBadgeNumber)"
         }
     }
     
-    override func viewWillAppear(animated: Bool) {
+    override func viewWillAppear(_ animated: Bool) {
         self.setTransparentNavigationBar("What do you want to do?".localized())
     }
     
-    func menu(sender: UIButton){
+    func menu(_ sender: UIButton){
         let vc = SideMenuManager.menuLeftNavigationController
-        self.presentViewController(vc!, animated: true, completion: nil)
+        self.present(vc!, animated: true, completion: nil)
     }
     
-    func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return self.listOfFeeds.count
     }
     
-    func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCellWithIdentifier("feedTableViewCell", forIndexPath: indexPath) as! FeedTableViewCell
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: "feedTableViewCell", for: indexPath) as! FeedTableViewCell
         
         let row = indexPath.row
         
@@ -82,8 +82,8 @@ class FeedViewController: BaseViewController, UITableViewDataSource, UITableView
         return cell
     }
     
-    func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-        self.performSegueWithIdentifier("segueCreateEvent", sender: indexPath.row)
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        self.performSegue(withIdentifier: "segueCreateEvent", sender: indexPath.row)
     }
     
     func createList() -> [FeedModel] {
@@ -101,9 +101,9 @@ class FeedViewController: BaseViewController, UITableViewDataSource, UITableView
         return listOfFeeds
     }
     
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "segueCreateEvent" {
-            let destinationVC = segue.destinationViewController as! CreateEventViewController
+            let destinationVC = segue.destination as! CreateEventViewController
             
             let row = sender as! Int
             

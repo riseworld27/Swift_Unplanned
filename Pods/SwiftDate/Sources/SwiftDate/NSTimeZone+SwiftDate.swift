@@ -35,16 +35,16 @@ public enum TimeZoneName: String {
         return self.rawValue
     }
 
-    public var timeZone: NSTimeZone {
+    public var timeZone: TimeZone {
         switch self {
         case .Local:
-            return NSTimeZone.localTimeZone()
+            return TimeZone.autoupdatingCurrent
         case .Default:
-            return NSTimeZone.defaultTimeZone()
+            return TimeZone.current
         case .System:
-            return NSTimeZone.systemTimeZone()
+            return TimeZone.current
         default:
-            return NSTimeZone(name: self.rawValue)!
+            return TimeZone(identifier: self.rawValue)!
         }
     }
 

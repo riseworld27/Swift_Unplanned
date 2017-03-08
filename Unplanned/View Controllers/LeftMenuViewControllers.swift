@@ -25,67 +25,67 @@ class LeftMenuViewControllers: UIViewController, UITableViewDelegate, UITableVie
         ivProfilePhoto.layer.cornerRadius = ivProfilePhoto.frame.size.height/2
         ivProfilePhoto.clipsToBounds = true
         
-        if let fName = PFUser.currentUser()!.valueForKey("firstName") as? String {
-                if let lName = PFUser.currentUser()!.valueForKey("lastName") as? String {
+        if let fName = PFUser.current()!.value(forKey: "firstName") as? String {
+                if let lName = PFUser.current()!.value(forKey: "lastName") as? String {
                     self.labelUserName.text = "\(fName) \(lName)"
             }
         }
         
-        if let imageUrl = PFUser.currentUser()?.valueForKey("photo") as? PFFile {
-            self.ivProfilePhoto.kf_setImageWithURL(NSURL(string: imageUrl.url!)!)
+        if let imageUrl = PFUser.current()?.value(forKey: "photo") as? PFFile {
+            self.ivProfilePhoto.kf_setImageWithURL(URL(string: imageUrl.url!)!)
         }
 
         badgeObserver = NotificationObserver(NotificationsHelper.badgeNotification) {
             [unowned self] (value, sender) in
 
-            self.countNotifications = UIApplication.sharedApplication().applicationIconBadgeNumber
+            self.countNotifications = UIApplication.shared.applicationIconBadgeNumber
             self.tableView.reloadData()
         }
     }
     
-    override func viewWillAppear(animated: Bool) {
+    override func viewWillAppear(_ animated: Bool) {
         
-                self.countNotifications = UIApplication.sharedApplication().applicationIconBadgeNumber
+                self.countNotifications = UIApplication.shared.applicationIconBadgeNumber
                 self.tableView.reloadData()
         
-        if PFUser.currentUser() != nil  {
-            PFUser.currentUser()?.fetchInBackground()
+        if PFUser.current() != nil  {
+            PFUser.current()?.fetchInBackground()
         }
     }
 
-    func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return 4
     }
     
-    func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCellWithIdentifier("menuTableViewCell", forIndexPath: indexPath) as! MenuTableViewCell
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: "menuTableViewCell", for: indexPath) as! MenuTableViewCell
         
         let row = indexPath.row
 
         switch row {
         case 0:
             cell.labelTitleMenu.text = "Feed".localized()
-            cell.labelCountNotifications.hidden = self.countNotifications != 0 ? false : true
+            cell.labelCountNotifications.isHidden = self.countNotifications != 0 ? false : true
             cell.labelCountNotifications.text = self.countNotifications != 0 ? "\(self.countNotifications)" : ""
             cell.ivIconMenu.image = UIImage(named: "icon_menu_feed")
             break
         case 1:
             cell.labelTitleMenu.text = "My Groups".localized()
-            cell.labelCountNotifications.hidden = true
+            cell.labelCountNotifications.isHidden = true
             cell.ivIconMenu.image = UIImage(named: "icon_menu_groups")
             break
         case 2:
-            cell.labelCountNotifications.hidden = true
+            cell.labelCountNotifications.isHidden = true
             cell.labelTitleMenu.text = "Settings".localized()
             cell.ivIconMenu.image = UIImage(named: "icon_menu_settings")
             break
         case 3:
-            cell.labelCountNotifications.hidden = true
+            cell.labelCountNotifications.isHidden = true
             cell.labelTitleMenu.text = "Share".localized()
             cell.ivIconMenu.image = UIImage(named: "icon_menu_share")
             break
         default:
-            cell.labelCountNotifications.hidden = true
+            cell.labelCountNotifications.isHidden = true
             break
         }
 
@@ -96,37 +96,37 @@ class LeftMenuViewControllers: UIViewController, UITableViewDelegate, UITableVie
 
     }
     
-    func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let row = indexPath.row
         
         switch row {
         case 0:
-            self.performSegueWithIdentifier("segueOpenListFeed", sender: nil)
+            self.performSegue(withIdentifier: "segueOpenListFeed", sender: nil)
             break
         case 1:
-            self.performSegueWithIdentifier("segueOpenListGroups", sender: nil)
+            self.performSegue(withIdentifier: "segueOpenListGroups", sender: nil)
             break
         case 2:
-            self.performSegueWithIdentifier("segueOpenSettings", sender: true)
+            self.performSegue(withIdentifier: "segueOpenSettings", sender: true)
             break
         case 3:
-            self.performSegueWithIdentifier("segueOpenSettings", sender: false)
+            self.performSegue(withIdentifier: "segueOpenSettings", sender: false)
             break
         default:
             return
         }
     }
     
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "segueOpenSettings" {
-            if let viewController: SettingsViewController = segue.destinationViewController as? SettingsViewController {
+            if let viewController: SettingsViewController = segue.destination as? SettingsViewController {
                 viewController.isSettings = sender as! Bool
             }
         }
     }
     
-    @IBAction func openEditProfile(sender: AnyObject) {
-        self.performSegueWithIdentifier("segueOpenProfileEdit", sender: nil)
+    @IBAction func openEditProfile(_ sender: AnyObject) {
+        self.performSegue(withIdentifier: "segueOpenProfileEdit", sender: nil)
     }
     
 }

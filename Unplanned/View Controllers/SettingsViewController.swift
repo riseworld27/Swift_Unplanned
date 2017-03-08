@@ -24,7 +24,7 @@ class SettingsViewController: BaseViewController, UITableViewDataSource, UITable
         
     }
     
-    override func viewWillAppear(animated: Bool) {
+    override func viewWillAppear(_ animated: Bool) {
         
         self.createNavigationBarButtons()
         if (isSettings) {
@@ -46,36 +46,36 @@ class SettingsViewController: BaseViewController, UITableViewDataSource, UITable
     func createNavigationBarButtons(){
         var menuImage:UIImage = UIImage(named: "icon_back_button")!
         
-        menuImage = menuImage.imageWithRenderingMode(UIImageRenderingMode.AlwaysOriginal)
-        let menuButton: UIButton = UIButton(frame: CGRectMake(5, 5, 20, 20))
-        menuButton.setImage(menuImage, forState: .Normal)
-        menuButton.setImage(menuImage, forState: .Highlighted)
-        menuButton.addTarget(self, action: #selector(CreateEventViewController.close(_:)), forControlEvents:.TouchUpInside)
+        menuImage = menuImage.withRenderingMode(UIImageRenderingMode.alwaysOriginal)
+        let menuButton: UIButton = UIButton(frame: CGRect(x: 5, y: 5, width: 20, height: 20))
+        menuButton.setImage(menuImage, for: UIControlState())
+        menuButton.setImage(menuImage, for: .highlighted)
+        menuButton.addTarget(self, action: #selector(CreateEventViewController.close(_:)), for:.touchUpInside)
         let menuButtonBar = UIBarButtonItem.init(customView: menuButton)
         self.navigationItem.leftBarButtonItem = menuButtonBar
         
         
-        self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Hecho", style: UIBarButtonItemStyle.Plain, target: self, action: #selector(CreateEventViewController.submit(_:)))
+        self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Hecho", style: UIBarButtonItemStyle.plain, target: self, action: #selector(CreateEventViewController.submit(_:)))
         
     }
     
-    func close(sender: UIButton) {
-        self.navigationController?.popViewControllerAnimated(true)
+    func close(_ sender: UIButton) {
+        self.navigationController?.popViewController(animated: true)
     }
     
     
     
-    func submit(sender : UIButton) {
-        self.navigationController?.popViewControllerAnimated(true)
+    func submit(_ sender : UIButton) {
+        self.navigationController?.popViewController(animated: true)
     }
     
     
     
-    func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return 2
     }
     
-    func tableView(tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         if section == 0 {
             return " "
         } else {
@@ -83,7 +83,7 @@ class SettingsViewController: BaseViewController, UITableViewDataSource, UITable
         }
     }
     
-    func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         
         if !isSettings {
             
@@ -134,12 +134,12 @@ class SettingsViewController: BaseViewController, UITableViewDataSource, UITable
         AppDelegate.delegate.setAuthVC()
     }
     
-    func numberOfSectionsInTableView(tableView: UITableView) -> Int {
+    func numberOfSections(in tableView: UITableView) -> Int {
         return self.countOfSections
     }
     
-    func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCellWithIdentifier("SettingsTableViewCell") as! SettingsTableViewCell
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: "SettingsTableViewCell") as! SettingsTableViewCell
         
         print(indexPath.section)
         
@@ -156,21 +156,21 @@ class SettingsViewController: BaseViewController, UITableViewDataSource, UITable
         return cell
     }
     
-    func tableView(tableView: UITableView, willDisplayHeaderView view: UIView, forSection section: Int)
+    func tableView(_ tableView: UITableView, willDisplayHeaderView view: UIView, forSection section: Int)
     {
         let header = view as! UITableViewHeaderFooterView
-        header.textLabel?.font = UIFont.systemFontOfSize(14.0)
-        header.textLabel?.textColor = UIColor.grayColor()
+        header.textLabel?.font = UIFont.systemFont(ofSize: 14.0)
+        header.textLabel?.textColor = UIColor.gray
          header.backgroundView?.backgroundColor = UIColor(rgba: "#F7F7F7")
     }
     
     
     func shareFacebook() {
-        let screen = UIScreen.mainScreen()
+        let screen = UIScreen.main
         
-        if let window = UIApplication.sharedApplication().keyWindow {
+        if let window = UIApplication.shared.keyWindow {
             UIGraphicsBeginImageContextWithOptions(screen.bounds.size, false, 0);
-            window.drawViewHierarchyInRect(window.bounds, afterScreenUpdates: false)
+            window.drawHierarchy(in: window.bounds, afterScreenUpdates: false)
             let image = UIGraphicsGetImageFromCurrentImageContext();
             UIGraphicsEndImageContext();
             
@@ -187,43 +187,43 @@ class SettingsViewController: BaseViewController, UITableViewDataSource, UITable
             controller.body = "Hi, pls download app UnPlanned";
             //controller.recipients = ["(415) 555-4387"]
             controller.messageComposeDelegate = self;
-            self.presentViewController(controller, animated: true, completion: nil);
+            self.present(controller, animated: true, completion: nil);
         }
     }
     
-    func messageComposeViewController(controller: MFMessageComposeViewController, didFinishWithResult result: MessageComposeResult) {
+    func messageComposeViewController(_ controller: MFMessageComposeViewController, didFinishWith result: MessageComposeResult) {
         switch result.rawValue {
-        case MessageComposeResultCancelled.rawValue :
+        case MessageComposeResult.cancelled.rawValue :
             print("message canceled")
             
-        case MessageComposeResultFailed.rawValue :
+        case MessageComposeResult.failed.rawValue :
             print("message failed")
             
-        case MessageComposeResultSent.rawValue :
+        case MessageComposeResult.sent.rawValue :
             print("message sent")
             
         default:
             break
         }
-        controller.dismissViewControllerAnimated(true, completion: nil)
+        controller.dismiss(animated: true, completion: nil)
     }
     
     
     func shareToAll() {
         let textToShare = "Try download app UnPlanned! "
         
-        if let myWebsite = NSURL(string: "http://www.codingexplorer.com/") {
-            let objectsToShare = [textToShare, myWebsite]
+        if let myWebsite = URL(string: "http://www.codingexplorer.com/") {
+            let objectsToShare = [textToShare, myWebsite] as [Any]
             let activityVC = UIActivityViewController(activityItems: objectsToShare, applicationActivities: nil)
             
             activityVC.popoverPresentationController?.sourceView = self.view
-            self.presentViewController(activityVC, animated: true, completion: nil)
+            self.present(activityVC, animated: true, completion: nil)
         }
     }
     
     func openLegalUrl() {
-        let url = NSURL(string: "https://google.com")!
-        UIApplication.sharedApplication().openURL(url)
+        let url = URL(string: "https://google.com")!
+        UIApplication.shared.openURL(url)
     }
 }
     

@@ -8,7 +8,7 @@
 
 import Foundation
 
-typealias FSqData = [VenuesModel] -> ()
+typealias FSqData = ([VenuesModel]) -> ()
 
 let URL_BASE = "https://api.foursquare.com/v2/"
 let URL_EXPLORE = "venues/explore?"
@@ -17,13 +17,13 @@ let CLIENT_ID = "OU5WFUWUI5YASOAMULYH5KEUMSWV1IAHKFAOAABR5RXPM52Q"
 let API_VERSION = "20160415"
 
 enum OpenType:Int {
-    case All = 0
-    case OpenOnly
+    case all = 0
+    case openOnly
 }
 
-func checkURL(urlString:String) -> NSURL? {
-    guard let url = NSURL(string: urlString) else {
-        return NSURL(string: "")
+func checkURL(_ urlString:String) -> URL? {
+    guard let url = URL(string: urlString) else {
+        return URL(string: "")
     }
     return url
 }

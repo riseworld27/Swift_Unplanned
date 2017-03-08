@@ -24,12 +24,12 @@ class LoginViewController: BaseViewController
         self.view.addSubview(authButton)
     }
     
-    func createAccount(session:DGTSession)
+    func createAccount(_ session:DGTSession)
     {
         hudShow()
         if let userQuery = PFUser.query() {
             userQuery.whereKey("username", equalTo: session.phoneNumber)
-            userQuery.getFirstObjectInBackgroundWithBlock({ (user, error) in
+            userQuery.getFirstObjectInBackground(block: { (user, error) in
                 self.hudHide()
                 if user == nil { self.createUser(session) }
                 else { self.loginUser(login:session.phoneNumber, password: session.userID) }
@@ -37,10 +37,10 @@ class LoginViewController: BaseViewController
         }
     }
     
-    func loginUser(login login:String, password:String)
+    func loginUser(login:String, password:String)
     {
         hudShow()
-        PFUser.logInWithUsernameInBackground(login, password: password, block: { (user, error) in
+        PFUser.logInWithUsername(inBackground: login, password: password, block: { (user, error) in
             self.hudHide()
             
             guard user != nil else {
@@ -48,8 +48,8 @@ class LoginViewController: BaseViewController
                 return
             }
 
-            if (PFUser.currentUser() != nil) {
-                registerPFUserForPushNotifications(PFUser.currentUser()!)
+            if (PFUser.current() != nil) {
+                registerPFUserForPushNotifications(PFUser.current()!)
 
                 FriendsFinderHelper.startMatchingParseFriendsWithDigits(sendNotificationsToMatchedUsers: false, completionBlock: {
                 })
@@ -58,7 +58,7 @@ class LoginViewController: BaseViewController
         })
     }
     
-    func createUser(session:DGTSession)
+    func createUser(_ session:DGTSession)
     {
         let user = UserModel()
         user.username = session.phoneNumber
@@ -66,7 +66,7 @@ class LoginViewController: BaseViewController
         user.digitsUserId = session.userID
         
         hudShow()
-        user.signUpInBackgroundWithBlock { (success, error) in
+        user.signUpInBackground { (success, error) in
             self.hudHide()
             
             guard success else {
@@ -84,8 +84,8 @@ class LoginViewController: BaseViewController
         return true
     }
     
-    override func setupDevFacilityActionSheet(sheet: UIAlertController) {
-        sheet.addAction(UIAlertAction(title: "login with testuser1", style: .Default, handler: { (action) in
+    override func setupDevFacilityActionSheet(_ sheet: UIAlertController) {
+        sheet.addAction(UIAlertAction(title: "login with testuser1", style: .default, handler: { (action) in
             self.loginUser(login: "testuser1", password: "testuser1")
         }))
     }

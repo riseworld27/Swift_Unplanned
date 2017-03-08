@@ -15,7 +15,7 @@ class FeedListModel: Object {
 	dynamic var titleEvent: String!
 	dynamic var addressEvent: String!
 	dynamic var locationTitleEvent: String!
-	dynamic var dateEvent: NSDate!
+	dynamic var dateEvent: Date!
 	dynamic var idEvent: String!
 	dynamic var membersString: String!
 
@@ -29,7 +29,7 @@ class FeedListModel: Object {
 	var members : NSArray {
 
 		set {
-			membersString = newValue.componentsJoinedByString("&")
+			membersString = newValue.componentsJoined(by: "&")
 		}
 
 		get {
@@ -38,7 +38,7 @@ class FeedListModel: Object {
 				return NSArray()
 			}
 
-			return self.membersString.componentsSeparatedByString("&") as NSArray
+			return self.membersString.components(separatedBy: "&") as NSArray
 		}
 	}
 
@@ -50,7 +50,7 @@ class FeedListModel: Object {
 		return "idEvent"
 	}
 
-	convenience init(_idEvent: String, _titleEvent: String, _addressEvent: String, _locationTitleEvent: String, _isMyEvent: Bool, _user: RealmUserModel, _dateEvent: NSDate, _members: NSArray, _coordinates: PFGeoPoint) {
+	convenience init(_idEvent: String, _titleEvent: String, _addressEvent: String, _locationTitleEvent: String, _isMyEvent: Bool, _user: RealmUserModel, _dateEvent: Date, _members: NSArray, _coordinates: PFGeoPoint) {
 
 		self.init()
 

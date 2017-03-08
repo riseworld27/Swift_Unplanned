@@ -56,31 +56,31 @@ class MapViewController : BaseViewController, CLLocationManagerDelegate, MKMapVi
             
         }
         
-        self.mapView.addObserver(self, forKeyPath: "myLocation", options: .New, context: nil)
+        self.mapView.addObserver(self, forKeyPath: "myLocation", options: .new, context: nil)
     }
     
     func createNavigationBarButtons(){
         var menuImage:UIImage = UIImage(named: "icon_back_button")!
         
-        menuImage = menuImage.imageWithRenderingMode(UIImageRenderingMode.AlwaysOriginal)
-        let menuButton: UIButton = UIButton(frame: CGRectMake(20, 20, 25, 25))
-        menuButton.setImage(menuImage, forState: .Normal)
-        menuButton.setImage(menuImage, forState: .Highlighted)
-        menuButton.addTarget(self, action: #selector(CreateEventViewController.close(_:)), forControlEvents:.TouchUpInside)
+        menuImage = menuImage.withRenderingMode(UIImageRenderingMode.alwaysOriginal)
+        let menuButton: UIButton = UIButton(frame: CGRect(x: 20, y: 20, width: 25, height: 25))
+        menuButton.setImage(menuImage, for: UIControlState())
+        menuButton.setImage(menuImage, for: .highlighted)
+        menuButton.addTarget(self, action: #selector(CreateEventViewController.close(_:)), for:.touchUpInside)
         let menuButtonBar = UIBarButtonItem.init(customView: menuButton)
         self.navigationItem.leftBarButtonItem = menuButtonBar
         
         
     }
     
-    func mapView(mapView: MKMapView, viewForAnnotation annotation: MKAnnotation) -> MKAnnotationView?
+    func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView?
     {
-        if annotation.isKindOfClass(MKUserLocation)
+        if annotation.isKind(of: MKUserLocation.self)
         {
             return nil;
         }
         
-        var view = mapView.dequeueReusableAnnotationViewWithIdentifier("annotationIdentifier");
+        var view = mapView.dequeueReusableAnnotationView(withIdentifier: "annotationIdentifier");
         
         if view == nil
         {
@@ -93,19 +93,19 @@ class MapViewController : BaseViewController, CLLocationManagerDelegate, MKMapVi
     }
     
     
-    func close(sender: UIButton) {
+    func close(_ sender: UIButton) {
         self.setTransparentNavigationBar()
-        self.navigationController?.popViewControllerAnimated(true)
+        self.navigationController?.popViewController(animated: true)
     }
     
     
-    func locationManager(manager: CLLocationManager, didChangeAuthorizationStatus status: CLAuthorizationStatus) {
-        if status == CLAuthorizationStatus.AuthorizedWhenInUse {
+    func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
+        if status == CLAuthorizationStatus.authorizedWhenInUse {
             mapView.showsUserLocation = true
         }
     }
     
-    func locationManager(manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         let location = locations.last
         
         let span = MKCoordinateSpanMake(0.075, 0.075)
@@ -116,7 +116,7 @@ class MapViewController : BaseViewController, CLLocationManagerDelegate, MKMapVi
         //self.mapView.setRegion(region, animated: true)
     }
     
-    override func viewDidDisappear(animated: Bool) {
+    override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
         self.locationManager.stopUpdatingLocation()
         self.mapView.removeObserver(self, forKeyPath: "myLocation")

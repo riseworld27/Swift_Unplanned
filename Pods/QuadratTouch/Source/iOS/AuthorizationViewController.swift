@@ -10,23 +10,23 @@ import Foundation
 import UIKit
 
 enum AuthorizationViewControllerRequestStatus  {
-    case None               // View controller has been initialized.
-    case Loading            // Web view loading page.
-    case Loaded             // Page has been loaded successfully.
-    case Failed(NSError)    // Web view failed to load page with error.
+    case none               // View controller has been initialized.
+    case loading            // Web view loading page.
+    case loaded             // Page has been loaded successfully.
+    case failed(NSError)    // Web view failed to load page with error.
 }
 
 /** 
     The class where AuthorizationViewController is pushed. It does nothing.
     You may use this class to apply you application style via UIAppearence.
 */
-public class AuthorizationNavigationController: UINavigationController {
+open class AuthorizationNavigationController: UINavigationController {
     
 }
 
-public class AuthorizationViewController : UIViewController, UIWebViewDelegate {
-    private let authorizationURL    : NSURL
-    private let redirectURL         : NSURL
+open class AuthorizationViewController : UIViewController, UIWebViewDelegate {
+    fileprivate let authorizationURL    : URL
+    fileprivate let redirectURL         : URL
     
     /**
         Whether view controller should controll network activity indicator or not.
@@ -34,17 +34,17 @@ public class AuthorizationViewController : UIViewController, UIWebViewDelegate {
     */
     internal var shouldControllNetworkActivityIndicator = false
     
-    private var networkActivityIndicator    : NetworkActivityIndicatorController?
-    private var activityIdentifier          : Int?
+    fileprivate var networkActivityIndicator    : NetworkActivityIndicatorController?
+    fileprivate var activityIdentifier          : Int?
     
     weak internal var authorizationDelegate : AuthorizationDelegate?
     
-    @IBOutlet public weak var webView       : UIWebView!
+    @IBOutlet open weak var webView       : UIWebView!
     
-    @IBOutlet private weak var statusLabel  : UILabel!
-    @IBOutlet private weak var indicator    : UIActivityIndicatorView!
+    @IBOutlet fileprivate weak var statusLabel  : UILabel!
+    @IBOutlet fileprivate weak var indicator    : UIActivityIndicatorView!
     
-    private var status : AuthorizationViewControllerRequestStatus = .None {
+    fileprivate var status : AuthorizationViewControllerRequestStatus = .none {
         didSet {
             self.updateUI()
         }
@@ -52,11 +52,11 @@ public class AuthorizationViewController : UIViewController, UIWebViewDelegate {
     
     // MARK: -
     
-    init(authorizationURL: NSURL, redirectURL: NSURL, delegate: AuthorizationDelegate) {
+    init(authorizationURL: URL, redirectURL: URL, delegate: AuthorizationDelegate) {
         self.authorizationURL = authorizationURL
         self.redirectURL = redirectURL
         self.authorizationDelegate = delegate
-        let bundle = NSBundle(forClass: AuthorizationViewController.self)
+        let bundle = Bundle(for: AuthorizationViewController.self)
         super.init(nibName: "AuthorizationViewController", bundle: bundle)
     }
     
@@ -64,12 +64,12 @@ public class AuthorizationViewController : UIViewController, UIWebViewDelegate {
         fatalError("init(coder:) has not been implemented")
     }
     
-    public override func viewDidLoad() {
+    open override func viewDidLoad() {
         super.viewDidLoad()
         webView.scrollView.showsVerticalScrollIndicator = false
         
-        let cancelButton = UIBarButtonItem(barButtonSystemItem: .Cancel,
-            target: self, action: Selector("cancelButtonTapped"))
+        let cancelButton = UIBarButtonItem(barButtonSystemItem: .cancel,
+            target: self, action: #selector(AuthorizationViewController.cancelButtonTapped))
         self.navigationItem.leftBarButtonItem = cancelButton
         if shouldControllNetworkActivityIndicator {
             networkActivityIndicator = NetworkActivityIndicatorController()
@@ -80,8 +80,8 @@ public class AuthorizationViewController : UIViewController, UIWebViewDelegate {
     // MARK: - Actions
     
     @objc func loadAuthorizationPage() {
-        self.status = .Loading
-        let request = NSURLRequest(URL: self.authorizationURL)
+        self.status = .loading
+        let request = URLRequest(url: self.authorizationURL)
         self.webView.loadRequest(request)
     }
     
@@ -91,30 +91,30 @@ public class AuthorizationViewController : UIViewController, UIWebViewDelegate {
     
     // MARK: - Web view delegate methods
     
-    public func webView(webView: UIWebView, shouldStartLoadWithRequest
-        request: NSURLRequest, navigationType: UIWebViewNavigationType) -> Bool {
-            if let URLString = request.URL?.absoluteString {
+    open func webView(_ webView: UIWebView, shouldStartLoadWith
+        request: URLRequest, navigationType: UIWebViewNavigationType) -> Bool {
+            if let URLString = request.url?.absoluteString {
                 if URLString.hasPrefix(self.redirectURL.absoluteString) {
                     // If we've reached redirect URL we should let know delegate.
-                    self.authorizationDelegate?.didReachRedirectURL(request.URL!)
+                    self.authorizationDelegate?.didReachRedirectURL(request.url!)
                     return false
                 }
             }
             return true
     }
     
-    public func webView(webView: UIWebView, didFailLoadWithError error: NSError?) {
+    open func webView(_ webView: UIWebView, didFailLoadWithError error: Error) {
         if let error = error {
             if error.domain == "WebKitErrorDomain" && error.code == 102 {
                 // URL loading was interrupted. It happens when one taps "download Foursquare to sign up!".
                 return
             }
-            self.status = .Failed(error)
+            self.status = .failed(error)
         }
     }
     
-    public func webViewDidFinishLoad(webView: UIWebView) {
-        self.status = .Loaded
+    open func webViewDidFinishLoad(_ webView: UIWebView) {
+        self.status = .loaded
     }
     
     // MARK: -
@@ -123,22 +123,22 @@ public class AuthorizationViewController : UIViewController, UIWebViewDelegate {
     func updateUI() {
         switch (self.status) {
             
-        case .Loading:
+        case .loading:
             // Show activity indicator, hide web view and status label.
             networkActivityIndicator?.endNetworkActivity(activityIdentifier)
             activityIdentifier = networkActivityIndicator?.beginNetworkActivity()
             indicator.startAnimating()
             indicator.alpha = 1.0
             self.webView.alpha = 0.0
-            self.statusLabel.hidden = true
+            self.statusLabel.isHidden = true
             
-        case .Loaded:
+        case .loaded:
             // Show web view, hide activity indicator and status label.
             networkActivityIndicator?.endNetworkActivity(activityIdentifier)
             
-            self.statusLabel.hidden = true
+            self.statusLabel.isHidden = true
             if self.webView.alpha == 0.0 {
-                UIView.animateWithDuration(0.2, animations: {
+                UIView.animate(withDuration: 0.2, animations: {
                     self.indicator.alpha = 0.0
                     self.webView.alpha = 1.0
                     }, completion: { (finished) -> Void in
@@ -147,23 +147,23 @@ public class AuthorizationViewController : UIViewController, UIWebViewDelegate {
                 })
             }
             
-        case .Failed(let error):
+        case .failed(let error):
             // Show refresh button and status label. Hide web view.
             networkActivityIndicator?.endNetworkActivity(activityIdentifier)
             
             self.statusLabel.text = error.localizedDescription
             self.indicator.stopAnimating()
             self.webView.alpha = 0.0
-            self.statusLabel.hidden = false
+            self.statusLabel.isHidden = false
             
             
-        case .None:
+        case .none:
             // Hide everynthing.
             networkActivityIndicator?.endNetworkActivity(activityIdentifier)
             
             self.indicator.stopAnimating()
             self.webView.alpha = 0.0
-            self.statusLabel.hidden = true
+            self.statusLabel.isHidden = true
         }
     }
     

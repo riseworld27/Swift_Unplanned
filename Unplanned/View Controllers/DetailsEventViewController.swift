@@ -35,12 +35,12 @@ class DetailsEventViewController: BaseViewController {
         super.viewDidLoad()
         
         self.labelAttending.text = "  " + "Attending".localized()
-        self.buttonYes.setTitle("Yes".localized(), forState: .Normal)
-        self.buttonNo.setTitle("No".localized(), forState: .Normal)
+        self.buttonYes.setTitle("Yes".localized(), for: UIControlState())
+        self.buttonNo.setTitle("No".localized(), for: UIControlState())
 
-        self.buttonYes.hidden = self.currentFeed.isMyEvent
-        self.buttonNo.hidden = self.currentFeed.isMyEvent
-        self.labelAttending.hidden = self.currentFeed.isMyEvent
+        self.buttonYes.isHidden = self.currentFeed.isMyEvent
+        self.buttonNo.isHidden = self.currentFeed.isMyEvent
+        self.labelAttending.isHidden = self.currentFeed.isMyEvent
 
         if (self.currentFeed.isMyEvent) {
             self.labelAttendingBottomConstraint.constant = -self.labelAttending.frame.size.height
@@ -48,27 +48,27 @@ class DetailsEventViewController: BaseViewController {
 
         self.labelCountMembers.text = "\(self.currentFeed.members.count) \("Confirmed".localized())"
         
-        self.ivBackgrounPicture.image = UIImage(named: "image_event_\(currentFeed.titleEvent.lowercaseString)")
-        self.labelTitle.text = self.currentFeed.titleEvent.capitalizedString
+        self.ivBackgrounPicture.image = UIImage(named: "image_event_\(currentFeed.titleEvent.lowercased())")
+        self.labelTitle.text = self.currentFeed.titleEvent.capitalized
         
         if self.currentFeed.user.photoUrl.characters.count > 0 {
-            self.ivUserPhoto.kf_setImageWithURL(NSURL(string: self.currentFeed.user.photoUrl)!)
+            self.ivUserPhoto.kf_setImageWithURL(URL(string: self.currentFeed.user.photoUrl)!)
         }
         
-        self.labelUserName.text = "\(self.currentFeed.user.valueForKey("name")!)"
+        self.labelUserName.text = "\(self.currentFeed.user.value(forKey: "name")!)"
         self.labelLocationTitle.text = self.currentFeed.locationTitleEvent
         self.labelLocationAddress.text = self.currentFeed.addressEvent
         
-        let year = NSString(string: String(currentFeed.dateEvent.year)).substringFromIndex(2)
-        labelDate.text = "\(currentFeed.dateEvent.monthName.capitalizedString) \(currentFeed.dateEvent.day) '\(year)"
-        labelTime.text = "\(currentFeed.dateEvent.mt_stringFromDateWithShortWeekdayTitle()) - \(self.timeFormat(currentFeed.dateEvent).lowercaseString)"
+        let year = NSString(string: String(currentFeed.dateEvent.year)).substring(from: 2)
+        labelDate.text = "\(currentFeed.dateEvent.monthName.capitalized) \(currentFeed.dateEvent.day) '\(year)"
+        labelTime.text = "\(currentFeed.dateEvent.mt_stringFromDateWithShortWeekdayTitle()) - \(self.timeFormat(currentFeed.dateEvent).lowercased())"
         
         
     }
     
     
     
-    override func viewWillAppear(animated: Bool) {
+    override func viewWillAppear(_ animated: Bool) {
         self.setupGradienNavigationBar(self.currentFeed.titleEvent)
         self.createNavigationBarButtons()
         
@@ -78,49 +78,49 @@ class DetailsEventViewController: BaseViewController {
     func createNavigationBarButtons(){
         var menuImage:UIImage = UIImage(named: "icon_back_button")!
         
-        menuImage = menuImage.imageWithRenderingMode(UIImageRenderingMode.AlwaysOriginal)
-        let menuButton: UIButton = UIButton(frame: CGRectMake(5, 5, 20, 20))
-        menuButton.setImage(menuImage, forState: .Normal)
-        menuButton.setImage(menuImage, forState: .Highlighted)
-        menuButton.addTarget(self, action: #selector(CreateEventViewController.close(_:)), forControlEvents:.TouchUpInside)
+        menuImage = menuImage.withRenderingMode(UIImageRenderingMode.alwaysOriginal)
+        let menuButton: UIButton = UIButton(frame: CGRect(x: 5, y: 5, width: 20, height: 20))
+        menuButton.setImage(menuImage, for: UIControlState())
+        menuButton.setImage(menuImage, for: .highlighted)
+        menuButton.addTarget(self, action: #selector(CreateEventViewController.close(_:)), for:.touchUpInside)
         let menuButtonBar = UIBarButtonItem.init(customView: menuButton)
         self.navigationItem.leftBarButtonItem = menuButtonBar
         
     }
     
-    func close(sender: UIButton) {
-        self.navigationController?.popViewControllerAnimated(true)
+    func close(_ sender: UIButton) {
+        self.navigationController?.popViewController(animated: true)
     }
     
     
-    @IBAction func openPeoplesPressed(sender: AnyObject) {
-        self.performSegueWithIdentifier("segueOpenDetailPeoples", sender: nil)
+    @IBAction func openPeoplesPressed(_ sender: AnyObject) {
+        self.performSegue(withIdentifier: "segueOpenDetailPeoples", sender: nil)
     }
     
-    @IBAction func acceptPressed(sender: AnyObject) {
+    @IBAction func acceptPressed(_ sender: AnyObject) {
         if self.isMember() {
-            let alert = UIAlertController(title: "Oops!", message:"Already accepted", preferredStyle: .Alert)
-            let action = UIAlertAction(title: "Close", style: .Default) { _ in
+            let alert = UIAlertController(title: "Oops!", message:"Already accepted", preferredStyle: .alert)
+            let action = UIAlertAction(title: "Close", style: .default) { _ in
                 // Put here any code that you would like to execute when
                 // the user taps that OK button (may be empty in your case if that's just
                 // an informative alert)
             }
             alert.addAction(action)
-            self.presentViewController(alert, animated: true){}
+            self.present(alert, animated: true){}
         }else {
             self.addMeAsMember()
         }
     }
     
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "segueOpenDetailPeoples" {
-            let destinationVC = segue.destinationViewController as! DetailEventPeoplesViewController
+            let destinationVC = segue.destination as! DetailEventPeoplesViewController
             let members = self.currentFeed.members
             destinationVC.listMembers = members
         }
         
         if segue.identifier == "segueOpenMapFromDetails" {
-            let destinationVC = segue.destinationViewController as! MapViewController
+            let destinationVC = segue.destination as! MapViewController
             
             destinationVC.titleLocation = self.currentFeed.locationTitleEvent
             destinationVC.addressLocation = self.currentFeed.addressEvent
@@ -128,30 +128,30 @@ class DetailsEventViewController: BaseViewController {
             destinationVC.adressLat = self.currentFeed.latitude
         }
     }
-    @IBAction func declinePressed(sender: AnyObject) {
+    @IBAction func declinePressed(_ sender: AnyObject) {
         removeMeAsMember()
     }
 
     func isMember () -> Bool {
-        return self.currentFeed.members.containsObject((PFUser.currentUser()?.username)!)
+        return self.currentFeed.members.contains((PFUser.current()?.username)!)
     }
 
     func addMeAsMember() {
         self.hudShow()
         
-        self.buttonNo.enabled = false
-        self.buttonYes.enabled = false
+        self.buttonNo.isEnabled = false
+        self.buttonYes.isEnabled = false
         self.buttonNo.backgroundColor = UIColor(hex6 : 0xD8D8D8)
         self.buttonYes.backgroundColor = UIColor(hex6 : 0x00BDE1)
-        self.buttonNo.setTitleColor(UIColor.blackColor(), forState: UIControlState.Normal)
-        self.buttonYes.setTitleColor(UIColor.whiteColor(), forState: UIControlState.Normal)
+        self.buttonNo.setTitleColor(UIColor.black, for: UIControlState())
+        self.buttonYes.setTitleColor(UIColor.white, for: UIControlState())
 
         let queryGetEvents = PFQuery(className: "Event")
         queryGetEvents.whereKey("objectId", equalTo : self.currentFeed.idEvent)
-        queryGetEvents.getFirstObjectInBackgroundWithBlock { (object:PFObject?, error: NSError?) in
-            object?.addObject((PFUser.currentUser()?.username)!, forKey: "accepted_members")
-            object?.saveInBackgroundWithBlock({ (done :Bool, error: NSError?) in
-                self.navigationController?.popViewControllerAnimated(true)
+        queryGetEvents.getFirstObjectInBackground { (object:PFObject?, error: NSError?) in
+            object?.add((PFUser.current()?.username)!, forKey: "accepted_members")
+            object?.saveInBackground(block: { (done :Bool, error: NSError?) in
+                self.navigationController?.popViewController(animated: true)
                 self.hudHide()
             })
         }
@@ -160,20 +160,20 @@ class DetailsEventViewController: BaseViewController {
     func removeMeAsMember() {
         self.hudShow()
         
-        self.buttonNo.enabled = false
-        self.buttonYes.enabled = false
+        self.buttonNo.isEnabled = false
+        self.buttonYes.isEnabled = false
         self.buttonNo.backgroundColor = UIColor(hex6 : 0x00BDE1)
         self.buttonYes.backgroundColor = UIColor(hex6 : 0xD8D8D8)
-        self.buttonNo.setTitleColor(UIColor.whiteColor(), forState: UIControlState.Normal)
-        self.buttonYes.setTitleColor(UIColor.blackColor(), forState: UIControlState.Normal)
+        self.buttonNo.setTitleColor(UIColor.white, for: UIControlState())
+        self.buttonYes.setTitleColor(UIColor.black, for: UIControlState())
 
         let queryGetEvents = PFQuery(className: "Event")
         queryGetEvents.whereKey("objectId", equalTo : self.currentFeed.idEvent)
-        queryGetEvents.getFirstObjectInBackgroundWithBlock { (object:PFObject?, error: NSError?) in
-            object?.removeObject((PFUser.currentUser()?.username)!, forKey: "accepted_members")
-            object?.removeObject((PFUser.currentUser()?.username)!, forKey: "participants")
-            object?.saveInBackgroundWithBlock({ (done :Bool, error: NSError?) in
-                self.navigationController?.popViewControllerAnimated(true)
+        queryGetEvents.getFirstObjectInBackground { (object:PFObject?, error: NSError?) in
+            object?.remove((PFUser.current()?.username)!, forKey: "accepted_members")
+            object?.remove((PFUser.current()?.username)!, forKey: "participants")
+            object?.saveInBackground(block: { (done :Bool, error: NSError?) in
+                self.navigationController?.popViewController(animated: true)
                 self.hudHide()
             })
         }
@@ -181,9 +181,9 @@ class DetailsEventViewController: BaseViewController {
     
    
     
-    @IBAction func openMap(sender: AnyObject) {
+    @IBAction func openMap(_ sender: AnyObject) {
         
-            self.performSegueWithIdentifier("segueOpenMapFromDetails", sender: nil)
+            self.performSegue(withIdentifier: "segueOpenMapFromDetails", sender: nil)
         
         
     }

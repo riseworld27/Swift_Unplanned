@@ -32,20 +32,20 @@ import Foundation
 /// - Note: Since this API is under consideration it may be either removed or revised in the near
 ///   future
 ///
-public class NSDateInterval: NSObject {
-    public internal(set) var start: NSDate
-    public internal(set) var end: NSDate
+open class NSDateInterval: NSObject {
+    open internal(set) var start: Date
+    open internal(set) var end: Date
 
-    public var interval: NSTimeInterval {
+    open var interval: TimeInterval {
         return end.timeIntervalSinceReferenceDate - start.timeIntervalSinceReferenceDate
     }
 
-    public required init(start: NSDate, end: NSDate) {
+    public required init(start: Date, end: Date) {
         self.start = start
         self.end = end
     }
 
-    public convenience init(start: NSDate, interval: NSTimeInterval) {
-        self.init(start: start, end: NSDate(timeInterval: interval, sinceDate: start))
+    public convenience init(start: Date, interval: TimeInterval) {
+        self.init(start: start, end: Date(timeInterval: interval, since: start))
     }
 }

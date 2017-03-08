@@ -25,7 +25,7 @@ class CreateProfileViewController: BaseViewController, UITextFieldDelegate, UIIm
     @IBOutlet weak var labelSelectPhoto: UILabel!
     @IBOutlet weak var btnContinue: UIButton!
     
-    var birthday = NSDate()
+    var birthday = Date()
     
     var imageChanged = false
     
@@ -36,7 +36,7 @@ class CreateProfileViewController: BaseViewController, UITextFieldDelegate, UIIm
         self.tfFirstName.placeholder = "Name".localized()
         self.tfLastName.placeholder = "Last name".localized()
         self.tfBirthday.placeholder = "Birthday".localized()
-        self.btnContinue.setTitle("Continue".localized(), forState: .Normal)
+        self.btnContinue.setTitle("Continue".localized(), for: UIControlState())
         
         //imgViewPhoto.backgroundColor = UIColor.lightGrayColor()
         imgViewPhoto.layer.cornerRadius = imgViewPhoto.height() / 2
@@ -48,42 +48,42 @@ class CreateProfileViewController: BaseViewController, UITextFieldDelegate, UIIm
         self.setupGradienNavigationBar("Registro")
     }
     
-    override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
-        super.touchesBegan(touches, withEvent: event)
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        super.touchesBegan(touches, with: event)
         view.endEditing(true);
     }
     
-    @IBAction func btnAddPhotoTap(sender: AnyObject) {
+    @IBAction func btnAddPhotoTap(_ sender: AnyObject) {
         view.endEditing(true)
         pickImage()
     }
     
     func setTFBirthday() {
-        tfBirthday.text = birthday.mt_stringValueWithDateStyle(.MediumStyle, timeStyle: .NoStyle)
+        tfBirthday.text = (birthday as NSDate).mt_stringValue(withDateStyle: .medium, time: .none)
     }
     
-    func textFieldShouldBeginEditing(textField: UITextField) -> Bool
+    func textFieldShouldBeginEditing(_ textField: UITextField) -> Bool
     {
         view.endEditing(true)
         
         let doneBlock:ActionDateDoneBlock = { (picker, date, origin) in
-            if let date = date as? NSDate { self.birthday = date }
+            if let date = date as? Date { self.birthday = date }
             self.setTFBirthday()
         }
         
-        ActionSheetDatePicker.showPickerWithTitle(appName(), datePickerMode: .Date, selectedDate: birthday, minimumDate: nil, maximumDate: NSDate(), doneBlock: doneBlock, cancelBlock: nil, origin: view)
+        ActionSheetDatePicker.show(withTitle: appName(), datePickerMode: .date, selectedDate: birthday, minimumDate: nil, maximumDate: Date(), doneBlock: doneBlock, cancel: nil, origin: view)
         
         return false
     }
     
-    @IBAction func btnContinueTap(sender: AnyObject)
+    @IBAction func btnContinueTap(_ sender: AnyObject)
     {
         
         if (((tfFirstName.text!.trim() == "") || (tfLastName.text!.trim() == "" ) || (tfBirthday.text!.trim() == ""))) {
             return
         }
         
-        if let image = imgViewPhoto.image, imgData = UIImagePNGRepresentation(image)
+        if let image = imgViewPhoto.image, let imgData = UIImagePNGRepresentation(image)
         {
             var photo = PFFile(data: imgData, contentType: "image/png")
             
@@ -92,7 +92,7 @@ class CreateProfileViewController: BaseViewController, UITextFieldDelegate, UIIm
             }
             
             hudShow()
-            photo.saveInBackgroundWithBlock({ (success, error) in
+            photo.saveInBackground(block: { (success, error) in
                 self.hudHide()
                 guard success else {
                     UIMsg("Failed to save photo \(error?.localizedDescription ?? "")")
@@ -106,10 +106,10 @@ class CreateProfileViewController: BaseViewController, UITextFieldDelegate, UIIm
         }
     }
     
-    func saveUser(photo:PFFile?)
+    func saveUser(_ photo:PFFile?)
     {
         AppDelegate.delegate.setLoggedInVC(true)
-        guard let user = UserModel.currentUser() as UserModel? else { return }
+        guard let user = UserModel.current() as UserModel? else { return }
         
         
         user.firstName = tfFirstName.text
@@ -119,13 +119,13 @@ class CreateProfileViewController: BaseViewController, UITextFieldDelegate, UIIm
         user.isProfileCreated = true
         
         hudShow()
-        user.saveInBackgroundWithBlock { (success, error) in
+        user.saveInBackground { (success, error) in
             self.hudHide()
             guard success else {
                 UIMsg("Failed to save profile \(error?.localizedDescription ?? "")")
                 return
             }
-        registerPFUserForPushNotifications(PFUser.currentUser()!)
+        registerPFUserForPushNotifications(PFUser.current()!)
             self.uploadFriendsAndFinish()
         }
     }
@@ -149,21 +149,21 @@ class CreateProfileViewController: BaseViewController, UITextFieldDelegate, UIIm
     func pickImage()
     {
         let imgPicker = UIImagePickerController()
-        imgPicker.sourceType = .SavedPhotosAlbum
+        imgPicker.sourceType = .savedPhotosAlbum
         imgPicker.delegate = self
         imgPicker.allowsEditing = true
-        presentViewController(imgPicker, animated: true, completion: nil)
+        present(imgPicker, animated: true, completion: nil)
     }
     
-    func imagePickerController(picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : AnyObject]) {
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
         imgViewPhoto.image = info[UIImagePickerControllerEditedImage] as? UIImage
-        imgViewPhoto.contentMode = .ScaleAspectFill
+        imgViewPhoto.contentMode = .scaleAspectFill
         self.imageChanged = true
-        dismissViewControllerAnimated(true, completion: nil)
+        dismiss(animated: true, completion: nil)
     }
     
-    func imagePickerControllerDidCancel(picker: UIImagePickerController) {
-        dismissViewControllerAnimated(true, completion: nil)
+    func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
+        dismiss(animated: true, completion: nil)
     }
     
     // MARK: dev facility
@@ -171,12 +171,12 @@ class CreateProfileViewController: BaseViewController, UITextFieldDelegate, UIIm
         return true
     }
     
-    override func setupDevFacilityActionSheet(sheet: UIAlertController)
+    override func setupDevFacilityActionSheet(_ sheet: UIAlertController)
     {
-        let action = UIAlertAction(title: "Fill test data", style: .Default, handler: { (action) in
+        let action = UIAlertAction(title: "Fill test data", style: .default, handler: { (action) in
             self.tfFirstName.text = "Minch"
             self.tfLastName.text = "Yoda"
-            self.birthday = NSDate.mt_dateFromYear(1900, month: 1, day: 1)
+            self.birthday = NSDate.mt_date(fromYear: 1900, month: 1, day: 1)
             self.setTFBirthday()
             self.imgViewPhoto.image = UIImage(named: "yoda.jpg")
         })
@@ -188,19 +188,19 @@ class CreateProfileViewController: BaseViewController, UITextFieldDelegate, UIIm
         //attributes for text agreemenents
         var whitTextAttributes = [String : NSObject]()
         //whitTextAttributes[NSFontAttributeName] = UIFont(name: "OpenSans", size: 12)
-        whitTextAttributes[NSForegroundColorAttributeName] = UIColor.lightGrayColor()
+        whitTextAttributes[NSForegroundColorAttributeName] = UIColor.lightGray
 
         var linkAttributeTerms = [String : NSObject]()
-        linkAttributeTerms[NSLinkAttributeName] = "http://google.com"
-        linkAttributeTerms[NSUnderlineStyleAttributeName] = NSNumber(bool:true)
+        linkAttributeTerms[NSLinkAttributeName] = "http://google.com" as NSObject?
+        linkAttributeTerms[NSUnderlineStyleAttributeName] = NSNumber(value: true as Bool)
         linkAttributeTerms[NSForegroundColorAttributeName] = UIColor(rgba: "#9C9C9C")
-        linkAttributeTerms[NSFontAttributeName] = UIFont.systemFontOfSize(12)
+        linkAttributeTerms[NSFontAttributeName] = UIFont.systemFont(ofSize: 12)
         
         var linkAttributePrivacy = [String : NSObject]()
-        linkAttributePrivacy[NSLinkAttributeName] = "http://google.com"
-        linkAttributePrivacy[NSUnderlineStyleAttributeName] = NSNumber(bool:true)
+        linkAttributePrivacy[NSLinkAttributeName] = "http://google.com" as NSObject?
+        linkAttributePrivacy[NSUnderlineStyleAttributeName] = NSNumber(value: true as Bool)
         linkAttributePrivacy[NSForegroundColorAttributeName] = UIColor(rgba: "#FFBDE1")
-        linkAttributePrivacy[NSFontAttributeName] = UIFont.systemFontOfSize(12)
+        linkAttributePrivacy[NSFontAttributeName] = UIFont.systemFont(ofSize: 12)
         //parts of full string
         let attributedStringStart = NSAttributedString(string: "\("By registering you are accepting the".localized())\n", attributes: whitTextAttributes)
         let space = NSAttributedString(string: " and ".localized(), attributes:  whitTextAttributes)
@@ -208,13 +208,13 @@ class CreateProfileViewController: BaseViewController, UITextFieldDelegate, UIIm
         let linkPrivacy = NSAttributedString(string: "Privacy Policy".localized(), attributes: linkAttributePrivacy)
         let tmpStr : NSMutableAttributedString = attributedStringStart.mutableCopy() as! NSMutableAttributedString
         
-        tmpStr.appendAttributedString(linkTerms)
-        tmpStr.appendAttributedString(space)
-        tmpStr.appendAttributedString(linkPrivacy)
+        tmpStr.append(linkTerms)
+        tmpStr.append(space)
+        tmpStr.append(linkPrivacy)
         tvOfferta.attributedText = tmpStr
-        tvOfferta.textAlignment = .Center
+        tvOfferta.textAlignment = .center
         
-        tvOfferta.dataDetectorTypes = UIDataDetectorTypes.Link
+        tvOfferta.dataDetectorTypes = UIDataDetectorTypes.link
         //textOfferta.editable = false;
 
     }
@@ -225,6 +225,6 @@ extension String
 {
     func trim() -> String
     {
-        return self.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceCharacterSet())
+        return self.trimmingCharacters(in: CharacterSet.whitespaces)
     }
 }

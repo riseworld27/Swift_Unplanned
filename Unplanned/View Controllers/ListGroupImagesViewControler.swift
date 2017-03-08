@@ -9,7 +9,7 @@
 import UIKit
 
 protocol ImageGroupSelectControllerDelegate{
-    func selectImageFinished(image:UIImage, type: String)
+    func selectImageFinished(_ image:UIImage, type: String)
 }
 
 class ListGroupImagesViewControler: BaseViewController, UITableViewDelegate, UITableViewDataSource {
@@ -29,7 +29,7 @@ class ListGroupImagesViewControler: BaseViewController, UITableViewDelegate, UIT
         self.createNavigationBarButtons()
     }
     
-    override func viewWillAppear(animated: Bool) {
+    override func viewWillAppear(_ animated: Bool) {
         self.setupGradienNavigationBar("Group icon".localized())
         
         
@@ -39,26 +39,26 @@ class ListGroupImagesViewControler: BaseViewController, UITableViewDelegate, UIT
     func createNavigationBarButtons(){
         var menuImage:UIImage = UIImage(named: "icon_back_button")!
         
-        menuImage = menuImage.imageWithRenderingMode(UIImageRenderingMode.AlwaysOriginal)
-        let menuButton: UIButton = UIButton(frame: CGRectMake(5, 5, 20, 20))
-        menuButton.setImage(menuImage, forState: .Normal)
-        menuButton.setImage(menuImage, forState: .Highlighted)
-        menuButton.addTarget(self, action: #selector(CreateEventViewController.close(_:)), forControlEvents:.TouchUpInside)
+        menuImage = menuImage.withRenderingMode(UIImageRenderingMode.alwaysOriginal)
+        let menuButton: UIButton = UIButton(frame: CGRect(x: 5, y: 5, width: 20, height: 20))
+        menuButton.setImage(menuImage, for: UIControlState())
+        menuButton.setImage(menuImage, for: .highlighted)
+        menuButton.addTarget(self, action: #selector(CreateEventViewController.close(_:)), for:.touchUpInside)
         let menuButtonBar = UIBarButtonItem.init(customView: menuButton)
         self.navigationItem.leftBarButtonItem = menuButtonBar
         
     }
     
-    func close(sender: UIButton) {
-        self.navigationController?.popViewControllerAnimated(true)
+    func close(_ sender: UIButton) {
+        self.navigationController?.popViewController(animated: true)
     }
     
-    func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return self.listOfTitles.count
     }
     
-    func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCellWithIdentifier("GroupListTableViewCell") as! GroupListTableViewCell
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: "GroupListTableViewCell") as! GroupListTableViewCell
         
         cell.labelTitle.text = self.listOfTitles[indexPath.row].localized()
         cell.ivPicture.image = UIImage(named: self.listOfImages[indexPath.row])
@@ -68,10 +68,10 @@ class ListGroupImagesViewControler: BaseViewController, UITableViewDelegate, UIT
         
     }
     
-    func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         
          self.delegate?.selectImageFinished(UIImage(named: self.listOfImages[indexPath.row])!, type: listOfTitles[indexPath.row])
         
-        self.navigationController?.popViewControllerAnimated(true)
+        self.navigationController?.popViewController(animated: true)
     }
 }

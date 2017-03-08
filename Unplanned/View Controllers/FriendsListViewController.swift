@@ -21,11 +21,11 @@ class FriendsListViewController: BaseViewController, UITableViewDataSource
     var friends = Array<UserModel>()
     func loadData()
     {
-        guard let friends = UserModel.currentUser()?.allFriends as? [PFObject] else { return }
+        guard let friends = UserModel.current()?.allFriends as? [PFObject] else { return }
         let castedFriends = friends.map { UserModel(withoutDataWithClassName: UserModel.parseClassName(), objectId: $0.objectId!) }
         
         hudShow()
-        UserModel.fetchAllInBackground(castedFriends, block: { (fetchedFriends, error) in
+        UserModel.fetchAll(inBackground: castedFriends, block: { (fetchedFriends, error) in
             self.hudHide()
             guard let friends = fetchedFriends as? [UserModel] else { UIMsg("Failed to fetch friends \(error?.localizedDescription ?? "")"); return }
             self.friends = friends
@@ -35,14 +35,14 @@ class FriendsListViewController: BaseViewController, UITableViewDataSource
     
     // MARK: table view
     
-    func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return friends.count
     }
     
     let cellReuse = "friend"
-    func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell
     {
-        let cell = tableView.dequeueReusableCellWithIdentifier(cellReuse, forIndexPath: indexPath)
+        let cell = tableView.dequeueReusableCell(withIdentifier: cellReuse, for: indexPath)
         
         let friend = friends[indexPath.row]
         cell.textLabel?.text = friend.fullName

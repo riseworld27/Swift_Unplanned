@@ -38,25 +38,25 @@ class EventGroupViewController: UIViewController, UITableViewDelegate, UITableVi
     override func viewDidLoad() {
         btnSelectGroup.layer.cornerRadius = 20
         btnSelectGroup.layer.borderWidth = 2
-        btnSelectGroup.layer.borderColor = UIColor(rgba: "#00BEE0").CGColor
+        btnSelectGroup.layer.borderColor = UIColor(rgba: "#00BEE0").cgColor
         
         viewSelectedGroup.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(EventGroupViewController.btnSelectGroupPressed(_:))))
-        self.btnSelectGroup.setTitle("Invite friends".localized(), forState: .Normal)
+        self.btnSelectGroup.setTitle("Invite friends".localized(), for: UIControlState())
         
         self.labelGroup.text = "Groups".localized()
-        self.buttonDone.setTitle("Done".localized(), forState: .Normal)
+        self.buttonDone.setTitle("Done".localized(), for: UIControlState())
 
-        self.viewSelectedGroup.hidden = true
-        self.tableView.hidden = false
-        self.viewHeaderTable.hidden = false
+        self.viewSelectedGroup.isHidden = true
+        self.tableView.isHidden = false
+        self.viewHeaderTable.isHidden = false
     }
     
-    override func viewWillAppear(animated: Bool) {
+    override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         self.getGroups()
     }
     
-    func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         if section == 0 {
             return 2
         }
@@ -64,27 +64,27 @@ class EventGroupViewController: UIViewController, UITableViewDelegate, UITableVi
         return listGroups.count
     }
 
-    func numberOfSectionsInTableView(tableView: UITableView) -> Int {
+    func numberOfSections(in tableView: UITableView) -> Int {
         return 2
     }
 
 
-    func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCellWithIdentifier("groupTableViewCell") as! GroupTableViewCell
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: "groupTableViewCell") as! GroupTableViewCell
 
         if (indexPath.section == 0) {
 
             if (indexPath.row == 0) {
-                cell.ivActivaBackground.hidden = true
+                cell.ivActivaBackground.isHidden = true
                 cell.labelTitle.text = "Create group".localized()
                 cell.ivIcon.image = UIImage(named: "icon_create_group")
             } else {
-                cell.ivActivaBackground.hidden = false
+                cell.ivActivaBackground.isHidden = false
                 cell.labelTitle.text = "Invite all".localized()
                 cell.ivIcon.image = UIImage(named: "icon_invite_all")
             }
         } else {
-            cell.ivActivaBackground.hidden = false
+            cell.ivActivaBackground.isHidden = false
             cell.labelTitle.text = listGroups[indexPath.row].titleGroup
             cell.ivIcon.image = UIImage(named: listGroups[indexPath.row].imageUrlGroup)
         }
@@ -93,11 +93,11 @@ class EventGroupViewController: UIViewController, UITableViewDelegate, UITableVi
         return cell
     }
     
-    func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
 
         if (indexPath.section == 0) {
             if indexPath.row == 0 {
-                self.performSegueWithIdentifier("segueCreateGroupFromEvent", sender: nil)
+                self.performSegue(withIdentifier: "segueCreateGroupFromEvent", sender: nil)
                 return
             }
             if indexPath.row == 1 {
@@ -108,13 +108,13 @@ class EventGroupViewController: UIViewController, UITableViewDelegate, UITableVi
         self.inviteAll = false
 
         tableView.reloadData()
-        let cell = tableView.cellForRowAtIndexPath(indexPath) as! GroupTableViewCell
+        let cell = tableView.cellForRow(at: indexPath) as! GroupTableViewCell
         
-        if (cell.ivIsActive.hidden) {
-            cell.ivIsActive.hidden = false
+        if (cell.ivIsActive.isHidden) {
+            cell.ivIsActive.isHidden = false
             self.selectedGroups.append(self.listGroups[indexPath.row])
         } else {
-            cell.ivIsActive.hidden = true
+            cell.ivIsActive.isHidden = true
             self.selectedGroups.removeObject(self.listGroups[indexPath.row])
         }
         
@@ -124,7 +124,7 @@ class EventGroupViewController: UIViewController, UITableViewDelegate, UITableVi
     
     
     
-    @IBAction func submitButtonPressed(sender: AnyObject) {
+    @IBAction func submitButtonPressed(_ sender: AnyObject) {
         
 //        if (self.labelSelectedGroup.text == "") {
 //            return
@@ -136,27 +136,27 @@ class EventGroupViewController: UIViewController, UITableViewDelegate, UITableVi
 //        self.btnSelectGroup.hidden = true
     }
     
-    @IBAction func btnSelectGroupPressed(sender: AnyObject) {
-        self.viewSelectedGroup.hidden = true
-        self.tableView.hidden = false
-        self.viewHeaderTable.hidden = false
+    @IBAction func btnSelectGroupPressed(_ sender: AnyObject) {
+        self.viewSelectedGroup.isHidden = true
+        self.tableView.isHidden = false
+        self.viewHeaderTable.isHidden = false
     }
     
     func getGroups() {
 
         let queryGetEvents = PFQuery(className: "Group")
-        queryGetEvents.whereKey("user", equalTo: PFUser.currentUser()!)
-        queryGetEvents.orderByDescending("createdAt")
+        queryGetEvents.whereKey("user", equalTo: PFUser.current()!)
+        queryGetEvents.order(byDescending: "createdAt")
         queryGetEvents.includeKey("user")
         
-        queryGetEvents.findObjectsInBackgroundWithBlock { (objects : [PFObject]?, error: NSError?) in
+        queryGetEvents.findObjectsInBackground { (objects : [PFObject]?, error: NSError?) in
             if error == nil {
 
                 let realm = try! Realm()
 
                 for object : PFObject in objects! {
 
-                    let group = GroupModel(_idGroup: object.objectId!, _titleGroup: object.valueForKey("title") as! String, _typeGroup: object.valueForKey("type") as! String, _imageUrlGroup: "group_\(object.valueForKey("type") as! String)")
+                    let group = GroupModel(_idGroup: object.objectId!, _titleGroup: object.value(forKey: "title") as! String, _typeGroup: object.value(forKey: "type") as! String, _imageUrlGroup: "group_\(object.value(forKey: "type") as! String)")
 
                     try! realm.write {
                         realm.add(group, update: true)

@@ -21,30 +21,30 @@ import SwiftyJSON
  */
 
 struct VenuesModel: CustomStringConvertible {
-    private var _id: String! //id of the business can be used to get data by business
-    private var _likes:String!
-    private var _name:String! // gives the place name no need to format
-    private var _featuredPhotoURL:NSURL! // gives featured photo with ability to get different sizes - some can have featured photos
-    private var _photoURL:NSURL!
-    private var _address:String! // can get formatted address
-    private var _phoneNumber:String! // can get formatted phone number
-    private var _coordinates: (lat:Double,long:Double)
-    private var _rating: String! // based of a 10 rating system - gives a decimal value
-    private var _ratingCount:String! //
-    private var _websiteString:String! // website link for venue
-    private var _placeComment:String! // add messagers name to it
-    private var _reviewerName:String! // name of reviewer
-    private var _priceMessage:String! // not always availale - tells you if it is cheap etc.
-    private var _status:String! // gives 0 or 1 depending on open or not, sometimes gives false or true instead of 0 or 1
-    private var _statusMessage:String! // tells you when it is going to be open next
-    private var _category:String! // gives category such as Breakfast spot - watch out for uniscalars
-    private var _menuURLString:String! // not always available
-    private var _distance: Double! //distance in meters
-    private var _fSqURLString:String! // link back to foursquare website
-    private var _hereNowCount:Int! // how many people are currently there
-    private var _facebookId:String! // can be used later on to link to facebook page
-    private var _currency:String! // currency used at establishment
-    private var _checkInsCount:String! // gives you the number of checkins count
+    fileprivate var _id: String! //id of the business can be used to get data by business
+    fileprivate var _likes:String!
+    fileprivate var _name:String! // gives the place name no need to format
+    fileprivate var _featuredPhotoURL:URL! // gives featured photo with ability to get different sizes - some can have featured photos
+    fileprivate var _photoURL:URL!
+    fileprivate var _address:String! // can get formatted address
+    fileprivate var _phoneNumber:String! // can get formatted phone number
+    fileprivate var _coordinates: (lat:Double,long:Double)
+    fileprivate var _rating: String! // based of a 10 rating system - gives a decimal value
+    fileprivate var _ratingCount:String! //
+    fileprivate var _websiteString:String! // website link for venue
+    fileprivate var _placeComment:String! // add messagers name to it
+    fileprivate var _reviewerName:String! // name of reviewer
+    fileprivate var _priceMessage:String! // not always availale - tells you if it is cheap etc.
+    fileprivate var _status:String! // gives 0 or 1 depending on open or not, sometimes gives false or true instead of 0 or 1
+    fileprivate var _statusMessage:String! // tells you when it is going to be open next
+    fileprivate var _category:String! // gives category such as Breakfast spot - watch out for uniscalars
+    fileprivate var _menuURLString:String! // not always available
+    fileprivate var _distance: Double! //distance in meters
+    fileprivate var _fSqURLString:String! // link back to foursquare website
+    fileprivate var _hereNowCount:Int! // how many people are currently there
+    fileprivate var _facebookId:String! // can be used later on to link to facebook page
+    fileprivate var _currency:String! // currency used at establishment
+    fileprivate var _checkInsCount:String! // gives you the number of checkins count
     
     var placeId:String {
         return _id
@@ -91,7 +91,7 @@ struct VenuesModel: CustomStringConvertible {
     var reviewMessage:String {
         return _placeComment
     }
-    var photoURL:NSURL {
+    var photoURL:URL {
         return _photoURL
     }
     var ratingCount:String {
@@ -112,7 +112,7 @@ struct VenuesModel: CustomStringConvertible {
     var currency:String {
         return _currency
     }
-    var featuredPhotoURL:NSURL {
+    var featuredPhotoURL:URL {
         return _featuredPhotoURL
     }
     var checkInsCount:String {
@@ -134,7 +134,7 @@ struct VenuesModel: CustomStringConvertible {
         //Location related json
         
         if let address = location["formattedAddress"].arrayObject as? [String] {
-            self._address = address.joinWithSeparator(",")
+            self._address = address.joined(separator: ",")
         }
         self._coordinates = (location["lat"].doubleValue,location["lng"].doubleValue)
         self._distance = location["distance"].doubleValue
@@ -167,7 +167,7 @@ struct VenuesModel: CustomStringConvertible {
         self._checkInsCount = venue["stats"]["checkinsCount"].stringValue
     }
     
-    private func getPriceType(priceMessage:Int) -> String {
+    fileprivate func getPriceType(_ priceMessage:Int) -> String {
         switch priceMessage {
         case 1:
             return "$"
@@ -182,9 +182,9 @@ struct VenuesModel: CustomStringConvertible {
         }
     }
     
-    func checkURL(urlString:String) -> NSURL? {
-        guard let url = NSURL(string: urlString) else {
-            return NSURL(string: "")
+    func checkURL(_ urlString:String) -> URL? {
+        guard let url = URL(string: urlString) else {
+            return URL(string: "")
         }
         return url
     }

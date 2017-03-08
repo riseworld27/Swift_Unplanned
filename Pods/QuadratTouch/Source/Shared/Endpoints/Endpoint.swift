@@ -8,7 +8,7 @@
 
 import Foundation
 
-public func +=<K, V> (inout left: Dictionary<K, V>, right: Dictionary<K, V>?) -> Dictionary<K, V> {
+public func +=<K, V> (left: inout Dictionary<K, V>, right: Dictionary<K, V>?) -> Dictionary<K, V> {
     if right != nil {
         for (k, v) in right! {
             left.updateValue(v, forKey: k)
@@ -17,9 +17,9 @@ public func +=<K, V> (inout left: Dictionary<K, V>, right: Dictionary<K, V>?) ->
     return left
 }
 
-public class Endpoint  {
+open class Endpoint  {
     weak    var session         : Session?
-    private let baseURL         : NSURL
+    fileprivate let baseURL         : URL
     
     var endpoint: String {
         return ""
@@ -27,18 +27,18 @@ public class Endpoint  {
     
     init(session: Session) {
         self.session = session
-        self.baseURL = NSURL(string:session.configuration.server.apiBaseURL) as NSURL!
+        self.baseURL = URL(string:session.configuration.server.apiBaseURL) as URL!
     }
     
-    func getWithPath(path: String, parameters: Parameters?, completionHandler:  ResponseClosure?) -> Task {
+    func getWithPath(_ path: String, parameters: Parameters?, completionHandler:  ResponseClosure?) -> Task {
         return self.taskWithPath(path, parameters: parameters, HTTPMethod: "GET", completionHandler: completionHandler)
     }
     
-    func postWithPath(path: String, parameters: Parameters?, completionHandler:  ResponseClosure?) -> Task {
+    func postWithPath(_ path: String, parameters: Parameters?, completionHandler:  ResponseClosure?) -> Task {
         return self.taskWithPath(path, parameters: parameters, HTTPMethod: "POST", completionHandler: completionHandler)
     }
     
-    func uploadTaskFromURL(fromURL: NSURL, path: String,
+    func uploadTaskFromURL(_ fromURL: URL, path: String,
         parameters: Parameters?, completionHandler:  ResponseClosure?) -> Task {
             let request = self.requestWithPath(path, parameters: parameters, HTTPMethod: "POST")
             let task = UploadTask(session: self.session!, request: request, completionHandler: completionHandler)
@@ -46,13 +46,13 @@ public class Endpoint  {
             return task
     }
     
-    private func taskWithPath(path: String, parameters: Parameters?,
+    fileprivate func taskWithPath(_ path: String, parameters: Parameters?,
         HTTPMethod: String, completionHandler:  ResponseClosure?) -> Task {
             let request = self.requestWithPath(path, parameters: parameters, HTTPMethod: HTTPMethod)
             return DataTask(session: self.session!, request: request, completionHandler: completionHandler)
     }
     
-    private func requestWithPath(path: String, parameters: Parameters?, HTTPMethod: String) -> Request {
+    fileprivate func requestWithPath(_ path: String, parameters: Parameters?, HTTPMethod: String) -> Request {
         var sessionParameters = session!.configuration.parameters()
         if sessionParameters[Parameter.oauth_token] == nil {
             do {

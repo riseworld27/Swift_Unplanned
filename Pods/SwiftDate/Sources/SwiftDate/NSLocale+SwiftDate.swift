@@ -34,14 +34,14 @@ public enum LocaleName: String {
         return self.rawValue
     }
 
-    public var locale: NSLocale {
+    public var locale: Locale {
         switch self {
         case .Current:
-            return NSLocale.currentLocale()
+            return Locale.current
         case .System:
-            return NSLocale.systemLocale()
+            return Locale.system
         default:
-            return NSLocale(localeIdentifier: self.rawValue)
+            return Locale(identifier: self.rawValue)
         }
     }
 
